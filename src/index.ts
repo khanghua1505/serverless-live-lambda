@@ -5,7 +5,12 @@ import {
   LambdaClient,
   UpdateFunctionConfigurationCommand,
 } from '@aws-sdk/client-lambda';
-import {setLog, setServerless, useFunctions} from './serverless';
+import {
+  setLog,
+  setServerless,
+  setServerlessOptions,
+  useFunctions,
+} from './serverless';
 import {useAWSClient} from './credentials';
 import {useBus} from './bus';
 import {useConsole} from './console';
@@ -30,14 +35,18 @@ class ServerlessLiveLambdaPlugin implements Plugin {
     start: {
       usage: 'Start your lambda function locally',
       lifecycleEvents: ['run'],
+      options: {
+        port: {
+          usage:
+            'Specify API Runtime Server port (e.g. "--port 18080"). Default port is 18080',
+          shortcut: 'p',
+          type: 'number',
+        },
+      },
     },
   };
 
-  constructor(
-    serverless: Serverless,
-    options: Serverless.Options,
-    {log}: Plugin.Logging
-  ) {
+  constructor(serverless: Serverless, options: any, {log}: Plugin.Logging) {
     this.serverless = serverless;
     this.serverless.service.provider.environment ||= {};
     this.serviceName = serverless.service.getServiceName();
@@ -45,6 +54,7 @@ class ServerlessLiveLambdaPlugin implements Plugin {
 
     setServerless(serverless);
     setLog(log);
+    setServerlessOptions(options);
     this.setServerlessEnvs();
   }
 
@@ -54,7 +64,7 @@ class ServerlessLiveLambdaPlugin implements Plugin {
       [
         'Automatically set SLS_LIVE_LAMBDA_ENABLED=true to forward messages from Lambda to the local machine.',
         'This option poses a potential danger in a production environment,',
-        'so please use it exclusively for development purposes.',
+        'so please use it exclusively for development purposes.\n',
       ].join(' ')
     );
 

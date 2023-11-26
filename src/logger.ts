@@ -64,19 +64,19 @@ export const useGlobalLog = () => {
 
   const result = {
     debug: (message: string, ...args: any[]) => {
-      log.debug(`${timeNow()} ${message}`, ...args);
+      log.debug(`${message}`, ...args);
     },
     info: (message: string, ...args: any[]) => {
-      log.notice(`${timeNow()} ${message}`, ...args);
+      log.notice(`${message}`, ...args);
     },
     success: (message: string, ...args: any[]) => {
-      log.success(`${timeNow()} ${message}`, ...args);
+      log.success(`${message}`, ...args);
     },
     warning: (message: string, ...args: any[]) => {
-      log.warning(`${timeNow()} ${message}`, ...args);
+      log.warning(`${message}`, ...args);
     },
     danger: (message: string, ...args: any[]) => {
-      log.error(`${timeNow()} ${message}`, ...args);
+      log.error(`${message}`, ...args);
     },
     bold: chalk.bold,
     all: chalk,

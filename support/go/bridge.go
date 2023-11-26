@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -123,7 +124,7 @@ func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 				log.Printf("unmarshal mqtt payload error %v\n", err)
 				return
 			}
-			log.Println("got fragment", frag.ID, frag.Index)
+			log.Printf("got fragment %s index %d\n", frag.ID, frag.Index)
 			pending, ok := fragments[frag.ID]
 			if !ok {
 				pending = make(Chunk)
@@ -131,7 +132,7 @@ func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 			}
 			pending[frag.Index] = frag
 			if len(pending) == int(frag.Count) {
-				log.Println("got all fragments", frag.ID)
+				log.Printf("got all fragments %s\n", frag.ID)
 				delete(fragments, frag.ID)
 				cmp := func(a Fragment, b Fragment) int {
 					return a.Index - b.Index
@@ -139,7 +140,11 @@ func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 				var data string
 				slices.SortFunc(maps.Values(pending), cmp)
 				for _, frag := range pending {
-					data += frag.Data
+					b, err := base64.StdEncoding.DecodeString(frag.Data)
+					if err != nil {
+						log.Printf("base64 decode frag %s index %d error %v\n", frag.ID, frag.Index, err)
+					}
+					data += string(b)
 				}
 				var evt Message
 				if err := json.Unmarshal([]byte(data), &evt); err != nil {
@@ -236,7 +241,7 @@ func encode(in any) ([]Fragment, error) {
 	if err != nil {
 		return nil, err
 	}
-	parts := chunk(string(data), 100000)
+	parts := chunk(string(data), 50000)
 	id := uuid.NewString()
 	var result []Fragment
 	for i, part := range parts {

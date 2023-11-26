@@ -4,9 +4,9 @@ import {lazy} from './utils/lazy';
 
 let sls: Serverless;
 
-export function setServerless(serverless: Serverless) {
+export const setServerless = (serverless: Serverless) => {
   sls = serverless;
-}
+};
 
 export const useServerless = () => {
   return sls!;
@@ -14,9 +14,9 @@ export const useServerless = () => {
 
 let serverlessLog: Plugin.Logging['log'];
 
-export function setLog(log: Plugin.Logging['log']) {
+export const setLog = (log: Plugin.Logging['log']) => {
   serverlessLog = log;
-}
+};
 
 export const useLog = () => {
   return serverlessLog!;
@@ -33,3 +33,13 @@ export const useFunctions = lazy(() => {
   };
   return result;
 });
+
+let serverlessOpts: any;
+
+export const setServerlessOptions = (opts: any) => {
+  serverlessOpts = opts;
+};
+
+export const useServerlessOptions = () => {
+  return serverlessOpts;
+};

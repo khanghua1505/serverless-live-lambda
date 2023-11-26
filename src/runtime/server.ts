@@ -1,16 +1,15 @@
 import express from 'express';
 import https from 'https';
 import {Events, useBus} from '../bus.js';
-import {getPort} from 'get-port-please';
 import {lazy} from '../utils/lazy.js';
 import {URL} from 'url';
 import {useGlobalLog} from '../logger.js';
 import {useRuntimeWorkers} from './workers.js';
+import {useServerlessOptions} from '../serverless.js';
 
 export const useRuntimeServerConfig = lazy(async () => {
-  const port = await getPort({
-    port: 12557,
-  });
+  const opts = useServerlessOptions();
+  const port = parseInt(opts.port || '18080');
   return {
     API_VERSION: '2018-06-01',
     port,
@@ -215,6 +214,6 @@ export const useRuntimeServer = lazy(async () => {
     }
   );
 
-  log.info(`Runtime server listen on ${cfg.url}`);
+  log.success(`API Runtime server listen on ${cfg.url}`);
   app.listen(cfg.port);
 });

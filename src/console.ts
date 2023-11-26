@@ -1,7 +1,7 @@
 import randColor from 'randomcolor';
 import {lazy} from './utils/lazy';
 import {useBus} from './bus';
-import {useFunctionLog} from './logger';
+import {useFunctionLog, useGlobalLog} from './logger';
 import {useFunctions} from './serverless';
 
 export const useFunctionColors = lazy(() => {
@@ -24,7 +24,8 @@ export const useConsole = lazy(() => {
 
   bus.subscribe('function.build.started', evt => {
     const functionId = evt.properties.functionId;
-    const log = useFunctionLog(functionId);
+    const log = useGlobalLog();
+
     let metric = metrics.get(functionId);
     if (!metric) {
       metric = {} as FunctionMetric;
@@ -32,22 +33,22 @@ export const useConsole = lazy(() => {
     }
 
     metric.startBuildTime = new Date();
-    log.info('🚀 Rebuilding function');
+    log.success(`🚀 Rebuild ${functionId} lambda`);
   });
 
   bus.subscribe('function.build.success', evt => {
-    const functionId = evt.properties.functionId;
-    const log = useFunctionLog(functionId);
-    const metric = metrics.get(functionId)!;
+    const log = useGlobalLog();
+    const metric = metrics.get(evt.properties.functionId)!;
 
     metric.stopBuildTime = new Date();
     const takenTime =
       (metric.stopBuildTime.getTime() - metric.startBuildTime.getTime()) / 1000;
-    log.info(`Done in ${takenTime}s`);
+    log.success(`Done in ${takenTime}s`);
   });
 
   bus.subscribe('function.build.failed', evt => {
-    const log = useFunctionLog(evt.properties.functionId);
+    const log = useGlobalLog();
+    log.danger(`${evt.properties.functionId} built failed`);
     log.info(evt.properties.errors.join('\n'));
   });
 

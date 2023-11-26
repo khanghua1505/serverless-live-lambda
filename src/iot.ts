@@ -60,7 +60,7 @@ export const useIOT = lazy(async () => {
       id,
       index,
       count: parts?.length,
-      data: part,
+      data: Buffer.from(part).toString('base64'),
     }));
   }
 
