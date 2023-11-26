@@ -1,7 +1,7 @@
 github.com/99designs/gqlgen v0.17.40 h1:/l8JcEVQ93wqIfmH9VS1jsAkwm6eAF1NwQn3N+SDqBY=
 github.com/99designs/gqlgen v0.17.40/go.mod h1:b62q1USk82GYIVjC60h02YguAZLqYZtvWml8KkhJps4=
-github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20231126092305-b75f14dd3348 h1:RiJ8OzrfsQ/eBq1moSIw1W9Hp1HCAxjlt3D4c9FoHCw=
-github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20231126092305-b75f14dd3348/go.mod h1:jxb4TFzP+RPiyb7gIwVL546b0vOnsQImVBSEIOurWSI=
+github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20231126101539-8b4b46a8e32f h1:mjYv6LY+EqzW/q0BYFVwatsKAg9ngHgUk/XcNqYe9ok=
+github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20231126101539-8b4b46a8e32f/go.mod h1:oneRTDD5eqd4RDo5Bbj3TMRAIbkk8oFcHx7c8iZiLiU=
 github.com/agnivade/levenshtein v1.1.1 h1:QY8M92nrzkmr798gCo3kmMyqXFzdQVpxLlGPRBij0P8=
 github.com/agnivade/levenshtein v1.1.1/go.mod h1:veldBMzWxcCG2ZvUTKD2kJNRdCk5hVbJomOvKkmgYbo=
 github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 h1:bvNMNQO63//z+xNgfBlViaCIJKLlCJ6/fmUseuG0wVQ=

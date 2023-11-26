@@ -20,6 +20,11 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 			Body:      "Todo 2",
 			CreatedOn: time.Now(),
 		},
+		{
+			ID:        "3",
+			Body:      "Todo 3",
+			CreatedOn: time.Now(),
+		},
 	}, nil
 }
 

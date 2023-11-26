@@ -4,7 +4,7 @@ go 1.18.0
 
 require (
 	github.com/99designs/gqlgen v0.17.40
-	github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20231126092305-b75f14dd3348
+	github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20231126101539-8b4b46a8e32f
 	github.com/aws/aws-lambda-go v1.41.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.0
 	github.com/gin-gonic/gin v1.9.1

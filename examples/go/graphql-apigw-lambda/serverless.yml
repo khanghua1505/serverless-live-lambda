@@ -5,6 +5,22 @@ provider:
   runtime: provided.al2
   region: ap-southeast-1
   memorySize: 128
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "iot:Connect"
+            - "iot:DescribeEndpoint"
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - "iot:Publish"
+            - "iot:Subscribe"
+            - "iot:Receive"
+          Resource:
+            - "arn:aws:iot:*:*:topic/serverless/*"
+            - "arn:aws:iot:*:*:topicfilter/serverless/*"
 
 custom:
   go:
