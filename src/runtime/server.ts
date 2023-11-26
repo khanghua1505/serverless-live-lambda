@@ -214,6 +214,6 @@ export const useRuntimeServer = lazy(async () => {
     }
   );
 
-  log.success(`API Runtime server listen on ${cfg.url}`);
+  log.success(`🚀 API Runtime server listen on ${cfg.url}`);
   app.listen(cfg.port);
 });

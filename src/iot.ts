@@ -1,7 +1,9 @@
 import iot from 'aws-iot-device-sdk';
+import path from 'path';
 import {DescribeEndpointCommand, IoTClient} from '@aws-sdk/client-iot';
 import {EventPayload, Events, EventTypes, useBus} from './bus';
 import {lazy} from './utils/lazy';
+import {PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
 import {randomUUID} from 'crypto';
 import {useAWSClient, useAWSCredentials, useAWSProvider} from './credentials';
 import {useGlobalLog} from './logger';
@@ -51,8 +53,34 @@ export const useIOT = lazy(async () => {
   const stage = provider.getStage();
 
   async function encode(input: any) {
+    const s3 = useAWSClient(S3Client);
     const id = randomUUID();
     const json = JSON.stringify(input);
+    if (json.length > 1024 * 1024) {
+      const deployBucket = await provider.getServerlessDeploymentBucketName();
+      const key = path.join('pointers', id);
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: deployBucket,
+          Key: path.join('pointers', id),
+          Body: json,
+        })
+      );
+      return [
+        {
+          id,
+          index: 0,
+          count: 1,
+          data: JSON.stringify({
+            type: 'pointer',
+            properties: {
+              bucket: deployBucket,
+              key: key,
+            },
+          }),
+        },
+      ];
+    }
     const parts = json.match(/.{1,50000}/g);
     if (!parts) return [];
     log.debug(`Encoded iot message into ${parts.length} parts`);

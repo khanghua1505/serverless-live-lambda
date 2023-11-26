@@ -33,7 +33,7 @@ export const useConsole = lazy(() => {
     }
 
     metric.startBuildTime = new Date();
-    log.success(`🚀 Rebuild ${functionId} lambda`);
+    log.success(`Rebuild ${functionId} lambda`);
   });
 
   bus.subscribe('function.build.success', evt => {
