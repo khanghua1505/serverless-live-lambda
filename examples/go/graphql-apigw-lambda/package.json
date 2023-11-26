@@ -8,8 +8,8 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "serverless-go-plugin": "^2.2.0",
-    "serverless-live-lambda": "file:../../.."
+    "serverless-live-lambda": "../../../"
   }
 }

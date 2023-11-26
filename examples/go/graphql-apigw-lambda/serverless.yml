@@ -37,6 +37,7 @@ functions:
   api:
     runtime: provided.al2
     handler: ./cmd/api/.
+    timeout: 30
     events:
       - httpApi:
           method: ANY

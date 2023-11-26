@@ -4,10 +4,12 @@ go 1.18.0
 
 require (
 	github.com/99designs/gqlgen v0.17.40
-	github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20231126101539-8b4b46a8e32f
+	github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20231126134639-f6c7950c7291
 	github.com/aws/aws-lambda-go v1.41.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-faker/faker/v4 v4.2.0
+	github.com/google/uuid v1.4.0
 	github.com/google/wire v0.5.0
 	github.com/vektah/gqlparser/v2 v2.5.10
 )
@@ -39,7 +41,6 @@ require (
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/google/subcommands v1.0.1 // indirect
-	github.com/google/uuid v1.4.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.3 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

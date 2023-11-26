@@ -23,6 +23,8 @@ func NewServer(resolver graph.ResolverRoot) *Server {
 }
 
 func (s *Server) Setup() any {
+	gin.SetMode(gin.ReleaseMode)
+
 	r := gin.Default()
 	r.POST("/graphql", graphqlHandler(s.r))
 	r.GET("/", playgroundHandler())

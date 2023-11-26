@@ -2,30 +2,31 @@ package api
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"time"
+
+	"github.com/go-faker/faker/v4"
+	"github.com/google/uuid"
 
 	"github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda/internal/graph"
 	"github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda/internal/graph/model"
 )
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return []*model.Todo{
-		{
-			ID:        "1",
-			Body:      "Todo 1",
+	count := 15000
+	models := make([]*model.Todo, count)
+	for i := 0; i < count; i++ {
+		models[i] = &model.Todo{
+			ID:        uuid.NewString(),
+			Body:      faker.Paragraph(),
 			CreatedOn: time.Now(),
-		},
-		{
-			ID:        "2",
-			Body:      "Todo 2",
-			CreatedOn: time.Now(),
-		},
-		{
-			ID:        "3",
-			Body:      "Todo 3",
-			CreatedOn: time.Now(),
-		},
-	}, nil
+		}
+	}
+	p, _ := json.Marshal(models)
+	size := len(p) / 1024
+	fmt.Printf("Payload size %d KB\n", size)
+	return models, nil
 }
 
 // Query returns graph.QueryResolver implementation.
