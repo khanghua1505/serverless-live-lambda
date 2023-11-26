@@ -92,8 +92,6 @@ plugins:
 
 ## Bridge Library
 
-## Support
-
 Currently, this plugin exclusively supports the Go runtime, with plans underway to extend support
 to additional runtimes. To forward the payload from Lambda, you need to install the bridge library
 to your codes.
