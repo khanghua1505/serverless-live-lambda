@@ -1,1 +1,0 @@
-import {} from 'serverless-live-lambda-plugin'

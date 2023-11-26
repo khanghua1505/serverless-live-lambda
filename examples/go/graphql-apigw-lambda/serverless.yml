@@ -1,0 +1,27 @@
+service: graphql-apigw-go-lambda
+
+provider:
+  name: aws
+  runtime: provided.al2
+  region: ap-southeast-1
+  memorySize: 128
+
+custom:
+  go:
+    binDir: bin
+    cmd: GOARCH=amd64 GOOS=linux go build -ldflags="-s -w"
+    supportedRuntimes: ["provided.al2"]
+    buildProvidedRuntimeAsBootstrap: true
+
+plugins:
+  - serverless-go-plugin
+  # - serverless-live-lambda
+
+functions:
+  api:
+    runtime: provided.al2
+    handler: cmd/api/.
+    events:
+      - httpApi:
+          method: ANY
+          path: /{proxy+}

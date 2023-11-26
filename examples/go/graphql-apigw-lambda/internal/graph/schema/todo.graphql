@@ -1,0 +1,7 @@
+scalar Time
+
+type Todo {
+  id: ID!
+  body: String!
+  createdOn: Time!
+}
