@@ -2,7 +2,6 @@ package bridge
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -138,13 +137,10 @@ func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 					return a.Index - b.Index
 				}
 				var data string
-				slices.SortFunc(maps.Values(pending), cmp)
-				for _, frag := range pending {
-					b, err := base64.StdEncoding.DecodeString(frag.Data)
-					if err != nil {
-						log.Printf("base64 decode frag %s index %d error %v\n", frag.ID, frag.Index, err)
-					}
-					data += string(b)
+				parts := maps.Values(pending)
+				slices.SortFunc(parts, cmp)
+				for _, frag := range parts {
+					data += frag.Data
 				}
 				var evt Message
 				if err := json.Unmarshal([]byte(data), &evt); err != nil {
