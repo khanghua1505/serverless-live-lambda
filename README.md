@@ -1,12 +1,14 @@
 # Serverless Live Lambda
 
+![](./docs/img/arch.png)
+
 This Serverless plugin forwards the payload from Lambda to the local machine, supporting faster
 development cycles. Unlike `serverless-offline`, this plugin does not emulate the Lambda environment;
 instead, it directly forwards the payload to the local machine.
 
 **Features:**
 
-- Supports Go λ runtimes. There are plans to support Node.js, Python, and Ruby soon.
+- Supports Go λ runtimes. There are plans to support Node.js and Python soon.
 - Hot reloads your handler files.
 
 This plugin is updated by its users; I handle maintenance and ensure that pull requests (PRs)
@@ -74,7 +76,6 @@ provider:
 
 Currently, the plugin does not support deploying Go lambdas. For Go lambda deployments,
 it is recommended to use the `serverless-go-plugin` to build and deploy your lambda.
-Fortunately, this plugin is fully compatible with `serverless-live-lambda`.
 
 It should look something like this:
 

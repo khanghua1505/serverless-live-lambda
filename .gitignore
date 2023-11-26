@@ -43,6 +43,7 @@ yarn.lock
 # Go
 vendor
 bin
+go.work*
 
 # Serverless framwork
 .serverless
