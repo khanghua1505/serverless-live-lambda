@@ -4,20 +4,21 @@ import {EventPayload, Events, EventTypes, useBus} from './bus';
 import {lazy} from './utils/lazy';
 import {randomUUID} from 'crypto';
 import {useAWSClient, useAWSCredentials, useAWSProvider} from './credentials';
-import {useLog, useServerless} from './serverless';
+import {useGlobalLog} from './logger';
+import {useServerless} from './serverless';
 import {VisibleError} from './errors';
 
 export const useIOTEndpoint = lazy(async () => {
-  const log = useLog();
+  const log = useGlobalLog();
 
   const iot = useAWSClient(IoTClient);
-  log.info('Getting IoT endpoint');
+  log.debug('Getting IoT endpoint');
   const response = await iot.send(
     new DescribeEndpointCommand({
       endpointType: 'iot:Data-ATS',
     })
   );
-  log.info(`Using IoT endpoint: ${response.endpointAddress}`);
+  log.debug(`Using IoT endpoint: ${response.endpointAddress}`);
 
   if (!response.endpointAddress) {
     throw new VisibleError('IoT Endpoint address not found');
@@ -39,7 +40,7 @@ interface Fragment {
 }
 
 export const useIOT = lazy(async () => {
-  const log = useLog();
+  const log = useGlobalLog();
   const bus = useBus();
 
   const sls = useServerless();
@@ -54,7 +55,7 @@ export const useIOT = lazy(async () => {
     const json = JSON.stringify(input);
     const parts = json.match(/.{1,50000}/g);
     if (!parts) return [];
-    log.info(`Encoded iot message into ${parts?.length} parts`);
+    log.debug(`Encoded iot message into ${parts?.length} parts`);
     return parts.map((part, index) => ({
       id,
       index,
@@ -76,7 +77,7 @@ export const useIOT = lazy(async () => {
   });
   const PREFIX = `serverless/${serviceName}/${stage}`;
   device.subscribe(`${PREFIX}/events`, {qos: 1});
-  log.info(`Subscribe to ${PREFIX}/events topic`);
+  log.debug(`Subscribe to ${PREFIX}/events topic`);
 
   const fragments = new Map<string, Map<number, Fragment>>();
 

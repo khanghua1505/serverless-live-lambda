@@ -8,9 +8,9 @@ import {
 import {setLog, setServerless, useFunctions} from './serverless';
 import {useAWSClient} from './credentials';
 import {useBus} from './bus';
-import {useColors} from './colors';
 import {useConsole} from './console';
 import {useFunctionBuilder} from './runtime/handlers';
+import {useGlobalLog} from './logger';
 import {useIOT} from './iot';
 import {useIOTBridge} from './runtime/iot';
 import {useProcess} from './process';
@@ -49,15 +49,13 @@ class ServerlessLiveLambdaPlugin implements Plugin {
   }
 
   async run() {
-    const colors = useColors();
-    colors.line(
-      colors.warning(
-        [
-          'Automatically set SLS_LIVE_LAMBDA_ENABLED=true to forward messages from Lambda to the local machine.',
-          'This option poses a potential danger in a production environment,',
-          'so please use it exclusively for development purposes.',
-        ].join(' ')
-      )
+    const log = useGlobalLog();
+    log.warning(
+      [
+        'Automatically set SLS_LIVE_LAMBDA_ENABLED=true to forward messages from Lambda to the local machine.',
+        'This option poses a potential danger in a production environment,',
+        'so please use it exclusively for development purposes.',
+      ].join(' ')
     );
 
     useProcess();
@@ -90,13 +88,13 @@ class ServerlessLiveLambdaPlugin implements Plugin {
   }
 
   private async updateLiveLambdaModeFunctionEnvs(functionId: string) {
-    const colors = useColors();
+    const log = useGlobalLog();
     let envs: Record<string, string> | undefined;
     try {
       const props = await this.getLambdaFunctionConfiguration(functionId);
       envs = props.Environment?.Variables;
     } catch (err) {
-      colors.danger(
+      log.danger(
         [
           `Get lambda function ${functionId} configuration error.`,
           'The error may be due to a lack of permission to access the lambda function,',

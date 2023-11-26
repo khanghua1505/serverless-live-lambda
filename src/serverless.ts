@@ -1,6 +1,6 @@
 import Plugin from 'serverless/classes/Plugin';
 import Serverless from 'serverless';
-import { lazy, } from './utils/lazy';
+import {lazy} from './utils/lazy';
 
 let sls: Serverless;
 
@@ -23,10 +23,7 @@ export const useLog = () => {
 };
 
 export const useFunctions = lazy(() => {
-  const log = useLog();
   const functions = sls.service.functions!;
-  const functionIds = Object.values(functions).map(func => func.name!);
-  log.info('functions', functionIds);
 
   const result = {
     all: functions,

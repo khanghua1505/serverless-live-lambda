@@ -4,7 +4,7 @@ import {Events, useBus} from '../bus.js';
 import {getPort} from 'get-port-please';
 import {lazy} from '../utils/lazy.js';
 import {URL} from 'url';
-import {useLog} from '../serverless.js';
+import {useGlobalLog} from '../logger.js';
 import {useRuntimeWorkers} from './workers.js';
 
 export const useRuntimeServerConfig = lazy(async () => {
@@ -19,7 +19,7 @@ export const useRuntimeServerConfig = lazy(async () => {
 });
 
 export const useRuntimeServer = lazy(async () => {
-  const log = useLog();
+  const log = useGlobalLog();
   const bus = useBus();
   const app = express();
   const workers = await useRuntimeWorkers();

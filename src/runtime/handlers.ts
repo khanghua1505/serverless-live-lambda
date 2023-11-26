@@ -4,7 +4,8 @@ import {FunctionDefinitionHandler, FunctionDefinitionImage} from 'serverless';
 import {lazy} from '../utils/lazy';
 import {Semaphore} from '../utils/semaphore.js';
 import {useBus} from '../bus';
-import {useFunctions, useLog, useServerless} from '../serverless';
+import {useFunctions, useServerless} from '../serverless';
+import {useGlobalLog} from '../logger';
 import {useGoHandler} from './handlers/go';
 import {useWatcher} from '../watcher';
 
@@ -120,15 +121,15 @@ export const useRuntimeHandlers = lazy(() => {
         };
       }
 
-      const log = useLog();
+      const log = useGlobalLog();
 
       if (pendingBuilds.has(functionId)) {
-        log.info('Waiting on pending build', functionId);
+        log.debug('Waiting on pending build', functionId);
         return pendingBuilds.get(functionId)! as ReturnType<typeof task>;
       }
       const promise = task();
       pendingBuilds.set(functionId, promise);
-      log.info('Building function', functionId);
+      log.debug('Building function', functionId);
       try {
         return await promise;
       } catch (err) {
@@ -151,7 +152,7 @@ interface Artifact {
 }
 
 export const useFunctionBuilder = lazy(() => {
-  const log = useLog();
+  const log = useGlobalLog();
   const artifacts = new Map<string, Artifact>();
   const handlers = useRuntimeHandlers();
   const semaphore = new Semaphore(4);
@@ -191,7 +192,7 @@ export const useFunctionBuilder = lazy(() => {
         continue;
       }
       await result.build(func.name!);
-      log.info('Rebuilt function', func.name);
+      log.debug('Rebuilt function', func.name);
     }
   });
 

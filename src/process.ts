@@ -6,12 +6,12 @@ import {
 } from '@aws-sdk/client-lambda';
 import {lazy} from './utils/lazy';
 import {useAWSClient} from './credentials';
-import {useColors} from './colors';
 import {useFunctions} from './serverless';
+import {useGlobalLog} from './logger';
 
 export const useProcess = lazy(() => {
-  const colors = useColors();
   const functions = useFunctions().all;
+  const log = useGlobalLog();
 
   process.on('SIGINT', () => {
     const processes = [];
@@ -22,7 +22,7 @@ export const useProcess = lazy(() => {
     Promise.all(processes)
       .then(() => process.exit(0))
       .catch(err => {
-        colors.danger(
+        log.danger(
           [
             `Clean up error ${err}`,
             'Please manually remove `SLS_LIVE_LAMBDA_ENABLED=true`.',
@@ -34,7 +34,7 @@ export const useProcess = lazy(() => {
 });
 
 async function cleanUpLambda(functionId: string) {
-  const colors = useColors();
+  const log = useGlobalLog();
   try {
     const lambda = useAWSClient(LambdaClient);
     const input = new GetFunctionConfigurationCommand({
@@ -51,9 +51,9 @@ async function cleanUpLambda(functionId: string) {
         },
       })
     );
-    colors.success(`Clean up ${functionId} success`);
+    log.success(`Clean up ${functionId} success`);
   } catch (err) {
-    colors.danger(
+    log.danger(
       [
         `Clean up ${functionId} error`,
         'Please manually remove `SLS_LIVE_LAMBDA_ENABLED=true`.',
