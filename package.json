@@ -8,7 +8,12 @@
     "dist"
   ],
   "license": "MIT",
-  "keywords": [],
+  "keywords": [
+    "serverless",
+    "plugin",
+    "sst",
+    "live lambda"
+  ],
   "scripts": {
     "lint": "gts lint",
     "clean": "gts clean",
