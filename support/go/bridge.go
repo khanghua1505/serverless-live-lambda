@@ -100,13 +100,6 @@ var onMessage func(context.Context, Message)
 var environments = make(map[string]string)
 var fragments = make(map[string]Chunk)
 
-func (b *Bride) Wrap(handler any) any {
-	if slices.Contains([]string{"true", "1"}, serverlessLiveLambdaEnabled) {
-		return b.Switch
-	}
-	return handler
-}
-
 func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 	sync.OnceFunc(func() {
 		if err := b.iot.Connect(ctx); err != nil {
@@ -274,4 +267,12 @@ func chunk(s string, size int) []string {
 		chunks = append(chunks, string(runes[i:nn]))
 	}
 	return chunks
+}
+
+func Wrap(handler any) any {
+	if slices.Contains([]string{"true", "1"}, serverlessLiveLambdaEnabled) {
+		b := NewBride()
+		return b.Switch
+	}
+	return handler
 }
