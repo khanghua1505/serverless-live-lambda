@@ -1,10 +1,9 @@
-import {IoTClient, DescribeEndpointCommand} from '@aws-sdk/client-iot';
-import {PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
-import {randomUUID} from 'crypto';
-import * as iot from 'aws-iot-device-sdk';
+import iot from 'aws-iot-device-sdk';
+import {DescribeEndpointCommand, IoTClient} from '@aws-sdk/client-iot';
+import {EventPayload, Events, EventTypes, useBus} from './bus';
 import {lazy} from './utils/lazy';
-import {EventPayload, useBus} from './bus';
-import {useAWSClient, useAWSProvider, useAWSCredentials} from './credentials';
+import {randomUUID} from 'crypto';
+import {useAWSClient, useAWSCredentials, useAWSProvider} from './credentials';
 import {useLog, useServerless} from './serverless';
 import {VisibleError} from './errors';
 
@@ -12,13 +11,13 @@ export const useIOTEndpoint = lazy(async () => {
   const log = useLog();
 
   const iot = useAWSClient(IoTClient);
-  log.debug('Getting IoT endpoint');
+  log.info('Getting IoT endpoint');
   const response = await iot.send(
     new DescribeEndpointCommand({
       endpointType: 'iot:Data-ATS',
     })
   );
-  log.debug(`Using IoT endpoint: ${response.endpointAddress}`);
+  log.info(`Using IoT endpoint: ${response.endpointAddress}`);
 
   if (!response.endpointAddress) {
     throw new VisibleError('IoT Endpoint address not found');
@@ -47,43 +46,15 @@ export const useIOT = lazy(async () => {
   const endpoint = await useIOTEndpoint();
   const provider = useAWSProvider();
   const creds = await useAWSCredentials();
-  const s3 = useAWSClient(S3Client);
   const serviceName = sls.service.getServiceName();
   const stage = provider.getStage();
-  const deploymentBucket = await provider.getServerlessDeploymentBucketName();
 
   async function encode(input: any) {
     const id = Math.random().toString();
     const json = JSON.stringify(input);
-    if (json.length > 1024 * 1024 * 3) {
-      // upload to s3
-      const key = `pointers/${id}`;
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: deploymentBucket,
-          Key: key,
-          Body: json,
-        })
-      );
-
-      return [
-        {
-          id,
-          index: 0,
-          count: 1,
-          data: JSON.stringify({
-            type: 'pointer',
-            properties: {
-              key,
-              bucket: deploymentBucket,
-            },
-          }),
-        },
-      ];
-    }
     const parts = json.match(/.{1,50000}/g);
     if (!parts) return [];
-    log.debug(`Encoded iot message into ${parts?.length} parts`);
+    log.info(`Encoded iot message into ${parts?.length} parts`);
     return parts.map((part, index) => ({
       id,
       index,
@@ -103,8 +74,9 @@ export const useIOT = lazy(async () => {
     sessionToken: creds.sessionToken,
     reconnectPeriod: 1,
   });
-  const PREFIX = `/serverless/${serviceName}/${stage}`;
+  const PREFIX = `serverless/${serviceName}/${stage}`;
   device.subscribe(`${PREFIX}/events`, {qos: 1});
+  log.info(`Subscribe to ${PREFIX}/events topic`);
 
   const fragments = new Map<string, Map<number, Fragment>>();
 
@@ -124,12 +96,8 @@ export const useIOT = lazy(async () => {
     log.debug('IoT reconnected');
   });
 
-  device.on('message', (_topic, buffer: Buffer) => {
+  device.on('message', (_topic, buffer) => {
     const fragment = JSON.parse(buffer.toString());
-    if (!fragment.id) {
-      bus.publish(fragment.type, fragment.properties);
-      return;
-    }
     let pending = fragments.get(fragment.id);
     if (!pending) {
       pending = new Map();
@@ -143,17 +111,16 @@ export const useIOT = lazy(async () => {
         .join('');
       fragments.delete(fragment.id);
       const evt = JSON.parse(data) as EventPayload;
-      if (evt.sourceID === bus.sourceID) return;
       bus.publish(evt.type, evt.properties);
     }
   });
 
   return {
     prefix: PREFIX,
-    async publish(
+    async publish<Type extends EventTypes>(
       topic: string,
-      type: string,
-      properties: Record<string, unknown>
+      type: Type,
+      properties: Events[Type]
     ) {
       const payload: EventPayload = {
         type,

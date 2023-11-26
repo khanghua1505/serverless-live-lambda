@@ -1,0 +1,13 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "es2019",
+    "lib": ["es2019", "es2020.promise", "es2020.bigint", "es2021.string"],
+    "strict": true,
+    "esModuleInterop": true,
+    "rootDir": "src/",
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

@@ -1,21 +1,26 @@
-import {randomBytes} from 'crypto';
 import {lazy} from './utils/lazy.js';
+import {randomBytes} from 'crypto';
 
-export type EventPayload = {
-  type: string;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Events {}
+
+export type EventTypes = keyof Events;
+
+export type EventPayload<Type extends EventTypes = EventTypes> = {
+  type: Type;
   sourceID: string;
-  properties: Record<string, unknown>;
+  properties: Events[Type];
 };
 
 type Subscription = {
-  type: string;
+  type: EventTypes;
   cb: (payload: any) => void;
 };
 
 export const useBus = lazy(() => {
   const subscriptions: Record<string, Subscription[]> = {};
 
-  function subscribers(type: string) {
+  function subscribers(type: EventTypes) {
     let arr = subscriptions[type];
     if (!arr) {
       arr = [];
@@ -28,8 +33,8 @@ export const useBus = lazy(() => {
 
   const result = {
     sourceID,
-    publish(type: string, properties: Record<string, unknown>) {
-      const payload: EventPayload = {
+    publish<Type extends EventTypes>(type: Type, properties: Events[Type]) {
+      const payload: EventPayload<Type> = {
         type,
         properties,
         sourceID,
@@ -47,13 +52,25 @@ export const useBus = lazy(() => {
       arr.splice(index, 1);
     },
 
-    subscribe(type: string, cb: (payload: EventPayload) => void) {
+    subscribe<Type extends EventTypes>(
+      type: Type,
+      cb: (payload: EventPayload<Type>) => void
+    ) {
       const sub: Subscription = {
         type,
         cb,
       };
       subscribers(type).push(sub);
       return sub;
+    },
+
+    forward<T extends EventTypes[]>(..._types: T) {
+      return <Type extends T[number]>(
+        type: Type,
+        cb: (payload: EventPayload<Type>) => void
+      ) => {
+        return this.subscribe(type, cb);
+      };
     },
   };
 

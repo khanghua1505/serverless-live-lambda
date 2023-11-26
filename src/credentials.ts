@@ -1,6 +1,5 @@
-import {} from 'serverless/classes/Service';
-import {useLog, useServerless} from './serverless';
 import {lazy} from './utils/lazy';
+import {useLog, useServerless} from './serverless';
 
 export const useAWSProvider = lazy(() => {
   const sls = useServerless();
@@ -30,6 +29,6 @@ export function useAWSClient<C>(client: new (config: any) => C, force = false) {
     credentials: credentials,
   });
   cache.set(client.name, result);
-  log.debug(`Created AWS client ${client.name}`);
+  log.info(`Created AWS client ${client.name}`);
   return result;
 }
