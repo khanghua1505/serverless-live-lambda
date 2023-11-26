@@ -12,7 +12,7 @@
   "scripts": {
     "lint": "gts lint",
     "clean": "gts clean",
-    "compile": "tsc",
+    "compile": "node esbuild.js",
     "fix": "gts fix",
     "prepare": "yarn compile",
     "pretest": "yarn compile",
