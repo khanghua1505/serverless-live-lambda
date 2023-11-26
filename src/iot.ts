@@ -51,16 +51,16 @@ export const useIOT = lazy(async () => {
   const stage = provider.getStage();
 
   async function encode(input: any) {
-    const id = Math.random().toString();
+    const id = randomUUID();
     const json = JSON.stringify(input);
     const parts = json.match(/.{1,50000}/g);
     if (!parts) return [];
-    log.debug(`Encoded iot message into ${parts?.length} parts`);
+    log.debug(`Encoded iot message into ${parts.length} parts`);
     return parts.map((part, index) => ({
       id,
       index,
       count: parts?.length,
-      data: Buffer.from(part).toString('base64'),
+      data: part,
     }));
   }
 

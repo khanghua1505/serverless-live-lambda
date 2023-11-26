@@ -123,7 +123,7 @@ export const useRuntimeServer = lazy(async () => {
       limit: '10mb',
     }),
     (req, res) => {
-      log.debug('Worker', req.params.workerId, 'got response', req.body);
+      log.debug('Worker', req.params.workerId, 'got response');
       const worker = workers.fromId(req.params.workerId)!;
       bus.publish('function.success', {
         workerId: worker.workerId,
