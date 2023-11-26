@@ -60,6 +60,7 @@ var (
 
 type Bride struct {
 	iot *iotClient
+	s3  *s3Client
 }
 
 type Fragment struct {
@@ -72,6 +73,9 @@ type Fragment struct {
 type Chunk map[int]Fragment
 
 type MessageProps struct {
+	Bucket string `json:"bucket"`
+	Key    string `json:"key"`
+
 	WorkerID     string                      `json:"workerId"`
 	RequestID    string                      `json:"requestId"`
 	FunctionID   string                      `json:"functionId"`
@@ -90,9 +94,11 @@ type Message struct {
 
 func NewBride() *Bride {
 	iot := newIOTClient()
+	s3 := newS3Client()
 
 	return &Bride{
 		iot: iot,
+		s3:  s3,
 	}
 }
 
@@ -145,6 +151,20 @@ func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 				var evt Message
 				if err := json.Unmarshal([]byte(data), &evt); err != nil {
 					log.Printf("unmarshal evt payload error %v\n", err)
+					return
+				}
+				if evt.Type == "pointer" {
+					body, err := b.s3.GetObject(ctx, evt.Properties.Bucket, evt.Properties.Key)
+					if err != nil {
+						log.Printf("get s3 pointer failed %v\n", err)
+						return
+					}
+					var evt2 Message
+					if err := json.Unmarshal(body, &evt2); err != nil {
+						log.Printf("unmarshal evt payload error %v\n", err)
+						return
+					}
+					onMessage(ctx, evt2)
 					return
 				}
 				onMessage(ctx, evt)
