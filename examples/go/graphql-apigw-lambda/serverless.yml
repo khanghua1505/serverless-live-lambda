@@ -10,6 +10,12 @@ provider:
       statements:
         - Effect: Allow
           Action:
+            - "s3:GetObject"
+            - "s3:DeleteObject"
+          Resource:
+            - !Sub "${ServerlessDeploymentBucket.Arn}/*"
+        - Effect: Allow
+          Action:
             - "iot:Connect"
             - "iot:DescribeEndpoint"
           Resource: "*"
