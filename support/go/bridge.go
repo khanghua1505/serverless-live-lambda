@@ -159,6 +159,12 @@ func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 						log.Printf("get s3 pointer failed %v\n", err)
 						return
 					}
+
+					if err := b.s3.DeleteObject(ctx, evt.Properties.Bucket, evt.Properties.Key); err != nil {
+						log.Printf("delete s3 pointer failed %v\n", err)
+						return
+					}
+
 					var evt2 Message
 					if err := json.Unmarshal(body, &evt2); err != nil {
 						log.Printf("unmarshal evt payload error %v\n", err)

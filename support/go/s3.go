@@ -43,3 +43,11 @@ func (c *s3Client) GetObject(ctx context.Context, bucket, key string) ([]byte, e
 
 	return body, nil
 }
+
+func (c *s3Client) DeleteObject(ctx context.Context, bucket, key string) error {
+	_, err := c.client.DeleteObject(ctx, &s3.DeleteObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
+	})
+	return err
+}
