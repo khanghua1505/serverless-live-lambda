@@ -7,8 +7,7 @@ import (
 )
 
 func main() {
-	br := bridge.NewBride()
 	srv := newServer()
 	handler := srv.Setup()
-	lambda.Start(br.Wrap(handler))
+	lambda.Start(bridge.Wrap(handler))
 }

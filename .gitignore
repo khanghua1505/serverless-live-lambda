@@ -42,7 +42,7 @@ yarn.lock
 
 # Go
 vendor
-.bin
+bin
 
 # Serverless framwork
 .serverless

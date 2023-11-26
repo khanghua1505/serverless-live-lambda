@@ -15,12 +15,12 @@ custom:
 
 plugins:
   - serverless-go-plugin
-  # - serverless-live-lambda
+  - serverless-live-lambda
 
 functions:
   api:
     runtime: provided.al2
-    handler: cmd/api/.
+    handler: ./cmd/api/.
     events:
       - httpApi:
           method: ANY
