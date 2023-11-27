@@ -1,10 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
 import {FunctionDefinitionHandler, FunctionDefinitionImage} from 'serverless';
+import {isDebug, useFunctions, useServerless} from '../serverless';
 import {lazy} from '../utils/lazy';
 import {Semaphore} from '../utils/semaphore.js';
 import {useBus} from '../bus';
-import {useFunctions, useServerless} from '../serverless';
 import {useGlobalLog} from '../logger';
 import {useGoHandler} from './handlers/go';
 import {useWatcher} from '../watcher';
@@ -153,6 +153,7 @@ interface Artifact {
 
 export const useFunctionBuilder = lazy(() => {
   const log = useGlobalLog();
+  const debug = isDebug();
   const artifacts = new Map<string, Artifact>();
   const handlers = useRuntimeHandlers();
   const semaphore = new Semaphore(4);
@@ -180,19 +181,21 @@ export const useFunctionBuilder = lazy(() => {
 
   const watcher = useWatcher();
   watcher.subscribe('file.changed', async evt => {
-    const functions = useFunctions();
-    for (const func of Object.values(functions.all)) {
-      const handler = handlers.for(func.runtime!);
-      if (
-        !handler.shouldBuild({
-          functionId: func.name!,
-          file: evt.properties.file,
-        })
-      ) {
-        continue;
+    if (!debug) {
+      const functions = useFunctions();
+      for (const func of Object.values(functions.all)) {
+        const handler = handlers.for(func.runtime!);
+        if (
+          !handler.shouldBuild({
+            functionId: func.name!,
+            file: evt.properties.file,
+          })
+        ) {
+          continue;
+        }
+        await result.build(func.name!);
+        log.debug('Rebuilt function', func.name);
       }
-      await result.build(func.name!);
-      log.debug('Rebuilt function', func.name);
     }
   });
 

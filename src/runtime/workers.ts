@@ -1,7 +1,7 @@
+import {isDebug, useFunctions} from '../serverless.js';
 import {lazy} from '../utils/lazy.js';
 import {useBus} from '../bus.js';
 import {useFunctionBuilder, useRuntimeHandlers} from './handlers.js';
-import {useFunctions} from '../serverless.js';
 import {useRuntimeServerConfig} from './server.js';
 
 declare module '../bus.js' {
@@ -60,6 +60,13 @@ export const useRuntimeWorkers = lazy(async () => {
       workerId: evt.properties.workerId,
     });
     lastRequestId.set(evt.properties.workerId, evt.properties.requestId);
+    if (isDebug()) {
+      workers.set(evt.properties.workerId, {
+        workerId: evt.properties.workerId,
+        functionId: evt.properties.functionId,
+      });
+      return;
+    }
     const worker = workers.get(evt.properties.workerId);
     if (worker) return;
     const props = useFunctions().fromId(evt.properties.functionId);

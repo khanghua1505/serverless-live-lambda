@@ -91,6 +91,42 @@ plugins:
   - serverless-go-plugin
 ```
 
+This plugin supports debugging Go code on a local machine.You can start in debug mode with the
+following command:
+
+```bash
+serverless start -m debug -f {function}
+```
+
+After successfully starting the service, you must configure your debugger to load the generated environment file
+located at `${workspaceFolder}/.serverless/.env`.
+
+An example for VSCode:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Go",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "envFile": "${workspaceFolder}/.serverless/.env",
+      "program": "${workspaceFolder}/cmd/api"
+    }
+  ]
+}
+```
+
+Here are some important notes when you run debug:
+
+- While in debug mode, some features may be disabled, such as hot reload.
+- Lambda function may timeout when running in debug mode. To resolve the problem,
+  you can increase the timeout of the function.
+- Some services, like AWS API Gateway or AppSync, have timeout limits (e.g., 30s).
+  The service may respond with the error `Service Unavailable` when the function exceeds its timeout.
+
 ## Bridge Library
 
 Currently, this plugin exclusively supports the Go runtime, with plans underway to extend support

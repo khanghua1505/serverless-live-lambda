@@ -9,7 +9,7 @@ import {useServerlessOptions} from '../serverless.js';
 
 export const useRuntimeServerConfig = lazy(async () => {
   const opts = useServerlessOptions();
-  const port = parseInt(opts.port || '18080');
+  const port = parseInt(opts.port || opts.p || '18080');
   return {
     API_VERSION: '2018-06-01',
     port,
@@ -184,7 +184,7 @@ export const useRuntimeServer = lazy(async () => {
 
       forward.end();
       forward.on('error', e => {
-        console.log(e.message);
+        log.info(e.message);
       });
       return;
     }

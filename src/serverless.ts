@@ -24,11 +24,28 @@ export const useLog = () => {
 
 export const useFunctions = lazy(() => {
   const functions = sls.service.functions!;
+  let filtered = functions;
+  let regex = new RegExp('.*');
 
   const result = {
-    all: functions,
+    get all() {
+      return filtered;
+    },
+    applyFilter: (pattern: string) => {
+      regex = new RegExp(pattern);
+      filtered = Object.keys(functions)
+        .filter(func => {
+          return regex.test(func);
+        })
+        .reduce((prev, current) => {
+          return {
+            ...prev,
+            [current]: functions[current],
+          };
+        }, {});
+    },
     fromId: (id: string) => {
-      return Object.values(functions).find(func => func.name === id);
+      return Object.values(filtered).find(func => func.name === id);
     },
   };
   return result;
@@ -42,4 +59,14 @@ export const setServerlessOptions = (opts: any) => {
 
 export const useServerlessOptions = () => {
   return serverlessOpts;
+};
+
+let debug = false;
+
+export const setDebugMode = () => {
+  debug = true;
+};
+
+export const isDebug = () => {
+  return debug;
 };

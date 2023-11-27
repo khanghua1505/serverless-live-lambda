@@ -1,3 +1,5 @@
+import fs from 'fs/promises';
+import path from 'path';
 import Plugin from 'serverless/classes/Plugin';
 import Serverless from 'serverless';
 import {
@@ -6,6 +8,7 @@ import {
   UpdateFunctionConfigurationCommand,
 } from '@aws-sdk/client-lambda';
 import {
+  setDebugMode,
   setLog,
   setServerless,
   setServerlessOptions,
@@ -19,13 +22,15 @@ import {useGlobalLog} from './logger';
 import {useIOT} from './iot';
 import {useIOTBridge} from './runtime/iot';
 import {useProcess} from './process';
-import {useRuntimeServer} from './runtime/server';
+import {useRuntimeServer, useRuntimeServerConfig} from './runtime/server';
 import {useRuntimeWorkers} from './runtime/workers';
 
 class ServerlessLiveLambdaPlugin implements Plugin {
   private readonly serverless: any;
   private readonly serviceName: string;
   private readonly stage: string;
+  private readonly debug: boolean;
+  private readonly filterOpt: string;
 
   hooks = {
     'start:run': this.run.bind(this),
@@ -42,6 +47,17 @@ class ServerlessLiveLambdaPlugin implements Plugin {
           shortcut: 'p',
           type: 'number',
         },
+        mode: {
+          usage: 'Specify the program mode. Only the value `debug` is allowed.',
+          shortcut: 'm',
+          type: 'string',
+        },
+        filter: {
+          usage:
+            'Utilize a regex pattern to filter the functions. The default is all functions.',
+          shortcut: 'f',
+          type: 'string',
+        },
       },
     },
   };
@@ -51,7 +67,11 @@ class ServerlessLiveLambdaPlugin implements Plugin {
     this.serverless.service.provider.environment ||= {};
     this.serviceName = serverless.service.getServiceName();
     this.stage = serverless.service.provider.stage;
-
+    this.debug = (options?.mode || options?.m) === 'debug';
+    this.filterOpt = options?.filter || options.f || '.*';
+    if (this.debug) {
+      setDebugMode();
+    }
     setServerless(serverless);
     setLog(log);
     setServerlessOptions(options);
@@ -60,6 +80,8 @@ class ServerlessLiveLambdaPlugin implements Plugin {
 
   async run() {
     const log = useGlobalLog();
+    await useIOTBridge();
+
     log.warning(
       [
         'Automatically set SLS_LIVE_LAMBDA_ENABLED=true to forward messages from Lambda to the local machine.',
@@ -67,21 +89,56 @@ class ServerlessLiveLambdaPlugin implements Plugin {
         'so please use it exclusively for development purposes.\n',
       ].join(' ')
     );
+    useFunctions().applyFilter(this.filterOpt);
+    const functions = useFunctions().all;
 
-    useProcess();
-    useConsole();
+    if (this.debug) {
+      if (Object.keys(functions).length > 1) {
+        throw new Error(
+          [
+            'Debug mode only supports one function at a time.',
+            'Please specify your function using the `--filter {function}` option',
+            'to enable debugging for the desired function.\n',
+          ].join(' ')
+        );
+      }
+      const cfg = await useRuntimeServerConfig();
+      const debugFunction = Object.values(functions)[0];
+      const envs: Record<string, string> = {
+        ...process.env,
+        ...debugFunction.environment,
+        IS_LOCAL: 'true',
+        AWS_LAMBDA_RUNTIME_API: `localhost:${cfg.port}/${debugFunction.name}`,
+      };
+      const envFile = path.join(process.cwd(), '.serverless', '.env');
+      await fs.writeFile(
+        envFile,
+        Object.keys(envs)
+          .map((key: string) => `${key}=${envs[key] || ''}`)
+          .join('\n')
+      );
+      log.success('Write env file success.');
+      log.info(
+        [
+          '\n',
+          'Debug mode for the server started successfully.',
+          "Now, there's only one step left to debug your code on your local machine.",
+          'Configure your debugger to load the generated environment file located at `${workspaceFolder}/.serverless/.env`.\n',
+        ].join(' ')
+      );
+    }
+
     const promises = Promise.all([
+      useProcess(),
+      useConsole(),
       useBus(),
       useIOT(),
-      useIOTBridge(),
       useRuntimeWorkers(),
       useRuntimeServer(),
     ]);
     await promises;
 
     const builder = useFunctionBuilder();
-    const functions = useFunctions().all;
-
     for (const opts of Object.values(functions)) {
       builder.build(opts.name!);
       this.updateLiveLambdaModeFunctionEnvs(opts.name!);
