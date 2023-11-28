@@ -14,7 +14,7 @@ import (
 )
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	count := 15000
+	count := 15
 	models := make([]*model.Todo, count)
 	for i := 0; i < count; i++ {
 		models[i] = &model.Todo{

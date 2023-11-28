@@ -9,7 +9,7 @@
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "envFile": "${workspaceFolder}/.serverless/.env",
+      "envFile": "${workspaceFolder}/.serverless/.env.api",
       "program": "${workspaceRoot}/cmd/api"
     }
   ]

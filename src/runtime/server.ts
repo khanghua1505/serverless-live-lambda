@@ -93,7 +93,7 @@ export const useRuntimeServer = lazy(async () => {
       const payload = await next(req.params.workerId);
       log.debug('Worker', req.params.workerId, 'sending next payload');
       res.set({
-        'Lambda-Runtime-Aws-Request-Id': payload.context.awsRequestId,
+        'Lambda-Runtime-Aws-Request-Id': payload.requestId,
         'Lambda-Runtime-Deadline-Ms': Date.now() + payload.deadline,
         'Lambda-Runtime-Invoked-Function-Arn':
           payload.context.invokedFunctionArn,

@@ -107,7 +107,7 @@ serverless start -m debug -f {function}
 ```
 
 After successfully starting the server, you must configure the debugger to load the generated environment file
-located at `${workspaceFolder}/.serverless/.env`.
+located at `${workspaceFolder}/.serverless/.env.${function}`.
 
 An example for VSCode:
 
@@ -120,8 +120,8 @@ An example for VSCode:
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "envFile": "${workspaceFolder}/.serverless/.env",
-      "program": "${workspaceFolder}/cmd/api"
+      "envFile": "${workspaceFolder}/.serverless/.env.api",
+      "program": "${workspaceRoot}/cmd/api"
     }
   ]
 }
