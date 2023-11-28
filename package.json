@@ -1,9 +1,10 @@
 {
   "name": "serverless-live-lambda",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Live Lambda Development that allows you to debug and test your Lambda functions locally",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://github.com/aboutkh/serverless-live-lambda#readme",
   "files": [
     "dist"
   ],

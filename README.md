@@ -41,8 +41,8 @@ plugins:
 ```
 
 This plugin uses AWS IoT over WebSocket to communicate between your local machine and the remote Lambda function.
-For large payloads, it places them into the S3 Serverless deployment bucket. The plugin must allow publishing
-and subscribing to AWS IoT Core and getting and putting S3 Serverless Deployment bucket.
+For large payloads, it places them into the S3 Serverless deployment bucket. To ensure the plugin operates without errors,
+you need to assign the required permissions to the functions.
 
 The permissions look like this:
 
@@ -72,10 +72,18 @@ provider:
             - 'arn:aws:iot:*:*:topicfilter/serverless/*'
 ```
 
+Lastly, initiate the server to facilitate the transfer of the payload from the remote Lambda to
+the local environment:
+
+```bash
+serverless start
+```
+
 ## Go Development
 
 Currently, the plugin does not support deploying Go lambdas. For Go lambda deployments,
-it is recommended to use the `serverless-go-plugin` to build and deploy your lambda.
+I recommend you to use the [serverless-go-plugin](https://www.npmjs.com/package/serverless-go-plugin)
+to build and deploy your lambda.
 
 It should look something like this:
 
@@ -91,14 +99,14 @@ plugins:
   - serverless-go-plugin
 ```
 
-This plugin supports debugging Go code on a local machine.You can start in debug mode with the
+This plugin also supports debugging Go on a local machine. You can start the server in debug mode with the
 following command:
 
 ```bash
 serverless start -m debug -f {function}
 ```
 
-After successfully starting the service, you must configure your debugger to load the generated environment file
+After successfully starting the server, you must configure the debugger to load the generated environment file
 located at `${workspaceFolder}/.serverless/.env`.
 
 An example for VSCode:
