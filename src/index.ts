@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
 import fs from 'fs/promises';
 import path from 'path';
 import Plugin from 'serverless/classes/Plugin';
@@ -69,6 +71,7 @@ class ServerlessLiveLambdaPlugin implements Plugin {
     this.stage = serverless.service.provider.stage;
     this.debug = (options?.mode || options?.m) === 'debug';
     this.filterOpt = options?.filter || options.f || '.*';
+    this.loadEnvs();
     if (this.debug) {
       setDebugMode();
     }
@@ -194,6 +197,14 @@ class ServerlessLiveLambdaPlugin implements Plugin {
     };
     Object.keys(envs).forEach(key => {
       this.serverless.service.provider.environment[key] = envs[key];
+    });
+  }
+
+  private loadEnvs() {
+    const envFiles = ['.env', `.env.${this.stage}`, `.env.${this.stage}.local`];
+    envFiles.map(fileName => {
+      const parsed = dotenv.config({path: fileName});
+      return dotenvExpand.expand(parsed).parsed;
     });
   }
 }
