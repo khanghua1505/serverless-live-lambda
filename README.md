@@ -1,6 +1,8 @@
 # 🚀 Serverless Live Lambda
 
-![](./docs/img/arch.png)
+[![npm version](https://img.shields.io/npm/v/serverless-live-lambda.svg?style=flat)](https://www.npmjs.com/package/serverless-live-lambda)
+
+![](https://raw.githubusercontent.com/aboutkh/serverless-live-lambda/main/docs/img/arch.png)
 
 This Serverless plugin forwards the payload from Lambda to the local machine, supporting faster
 development cycles. Unlike `serverless-offline`, this plugin does not emulate the Lambda environment;
@@ -9,7 +11,9 @@ instead, it directly forwards the payload to the local machine.
 **Features:**
 
 - Supports Go λ runtimes. There are plans to support Node.js and Python soon.
+- Debug lambda function in local machine.
 - Hot reloads your handler files.
+- Load variables from .env files.
 
 This plugin is updated by its users; I handle maintenance and ensure that pull requests (PRs)
 are relevant to the community. In other words, if you find a bug or want a new feature,
@@ -78,6 +82,20 @@ the local environment:
 ```bash
 serverless start
 ```
+
+## Automatic ENV file resolution
+
+By default, the plugin looks for the file: `.env`. In most use cases, this is all that is needed.
+However, there are situations where you may require different environment files based on
+the specific environment, such as:
+
+```
+.env.dev
+.env.prod
+```
+
+The plugin automatically loads environment files based on the Serverless stage.
+If the `stage` is not set, it will default to development.
 
 ## Go Development
 
