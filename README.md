@@ -1,4 +1,4 @@
-# Serverless Live Lambda
+# 🚀 Serverless Live Lambda
 
 ![](./docs/img/arch.png)
 
