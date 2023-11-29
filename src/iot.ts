@@ -2,6 +2,7 @@ import iot from 'aws-iot-device-sdk';
 import path from 'path';
 import {DescribeEndpointCommand, IoTClient} from '@aws-sdk/client-iot';
 import {EventPayload, Events, EventTypes, useBus} from './bus';
+import {gzip} from './utils/zip';
 import {lazy} from './utils/lazy';
 import {PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
 import {randomUUID} from 'crypto';
@@ -59,11 +60,12 @@ export const useIOT = lazy(async () => {
     if (json.length > 1024 * 1024) {
       const deployBucket = await provider.getServerlessDeploymentBucketName();
       const key = path.join('pointers', id);
+      const compressed = await gzip(json);
       await s3.send(
         new PutObjectCommand({
           Bucket: deployBucket,
-          Key: path.join('pointers', id),
-          Body: json,
+          Key: key,
+          Body: compressed,
         })
       );
       return [
@@ -76,6 +78,7 @@ export const useIOT = lazy(async () => {
             properties: {
               bucket: deployBucket,
               key: key,
+              gzip: true,
             },
           }),
         },

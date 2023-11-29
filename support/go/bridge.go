@@ -1,10 +1,13 @@
 package bridge
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"slices"
@@ -75,6 +78,7 @@ type Chunk map[int]Fragment
 type MessageProps struct {
 	Bucket string `json:"bucket"`
 	Key    string `json:"key"`
+	Gzip   bool   `json:"gzip"`
 
 	WorkerID     string                      `json:"workerId"`
 	RequestID    string                      `json:"requestId"`
@@ -159,14 +163,25 @@ func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 						log.Printf("get s3 pointer failed %v\n", err)
 						return
 					}
-
 					if err := b.s3.DeleteObject(ctx, evt.Properties.Bucket, evt.Properties.Key); err != nil {
 						log.Printf("delete s3 pointer failed %v\n", err)
 						return
 					}
+					buff := body
+					if evt.Properties.Gzip {
+						zr, err := gzip.NewReader(bytes.NewReader(body))
+						if err != nil {
+							log.Printf("unzip s3 pointer failed %v\n", err)
+							return
+						}
+						if buff, err = io.ReadAll(zr); err != nil {
+							log.Printf("unzip s3 pointer failed %v\n", err)
+							return
+						}
+					}
 
 					var evt2 Message
-					if err := json.Unmarshal(body, &evt2); err != nil {
+					if err := json.Unmarshal(buff, &evt2); err != nil {
 						log.Printf("unmarshal evt payload error %v\n", err)
 						return
 					}
