@@ -1,11 +1,11 @@
 const {build} = require('esbuild');
-const {dependencies} = require('./package.json');
+const {bundledDependencies} = require('./package.json');
 
 build({
   entryPoints: ['src/index.ts'],
   bundle: true,
   sourcemap: true,
-  external: Object.keys(dependencies),
+  external: bundledDependencies,
   platform: 'node',
   outfile: 'dist/index.js',
 });
