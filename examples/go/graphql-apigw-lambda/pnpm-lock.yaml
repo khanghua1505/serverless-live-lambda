@@ -9,8 +9,8 @@ devDependencies:
     specifier: ^2.2.0
     version: 2.2.0
   serverless-live-lambda:
-    specifier: ../../../
-    version: link:../../..
+    specifier: ../../../dist
+    version: link:../../../dist
 
 packages:
 
