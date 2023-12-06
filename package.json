@@ -13,7 +13,8 @@
     "serverless",
     "plugin",
     "sst",
-    "live lambda"
+    "lambda",
+    "aws"
   ],
   "scripts": {
     "lint": "gts lint",
