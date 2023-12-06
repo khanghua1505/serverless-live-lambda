@@ -1,14 +1,25 @@
-import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
-import fs from 'fs/promises';
-import path from 'path';
-import Plugin from 'serverless/classes/Plugin';
-import Serverless from 'serverless';
 import {
   GetFunctionConfigurationCommand,
   LambdaClient,
   UpdateFunctionConfigurationCommand,
 } from '@aws-sdk/client-lambda';
+import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
+import fs from 'fs/promises';
+import path from 'path';
+import Serverless from 'serverless';
+import Plugin from 'serverless/classes/Plugin';
+
+import {useBus} from './bus';
+import {useConsole} from './console';
+import {useAWSClient} from './credentials';
+import {useIOT} from './iot';
+import {useGlobalLog} from './logger';
+import {useProcess} from './process';
+import {useFunctionBuilder} from './runtime/handlers';
+import {useIOTBridge} from './runtime/iot';
+import {useRuntimeServer, useRuntimeServerConfig} from './runtime/server';
+import {useRuntimeWorkers} from './runtime/workers';
 import {
   setDebugMode,
   setLog,
@@ -16,16 +27,6 @@ import {
   setServerlessOptions,
   useFunctions,
 } from './serverless';
-import {useAWSClient} from './credentials';
-import {useBus} from './bus';
-import {useConsole} from './console';
-import {useFunctionBuilder} from './runtime/handlers';
-import {useGlobalLog} from './logger';
-import {useIOT} from './iot';
-import {useIOTBridge} from './runtime/iot';
-import {useProcess} from './process';
-import {useRuntimeServer, useRuntimeServerConfig} from './runtime/server';
-import {useRuntimeWorkers} from './runtime/workers';
 
 class ServerlessLiveLambdaPlugin implements Plugin {
   private readonly serverless: any;

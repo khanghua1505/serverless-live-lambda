@@ -1,8 +1,9 @@
 import randColor from 'randomcolor';
-import {lazy} from './utils/lazy';
+
 import {useBus} from './bus';
 import {useFunctionLog, useGlobalLog} from './logger';
 import {useFunctions} from './serverless';
+import {lazy} from './utils/lazy';
 
 export const useFunctionColors = lazy(() => {
   const colorMap = new Map<string, string>();

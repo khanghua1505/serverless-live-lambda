@@ -1,5 +1,6 @@
-import Plugin from 'serverless/classes/Plugin';
 import Serverless from 'serverless';
+import Plugin from 'serverless/classes/Plugin';
+
 import {lazy} from './utils/lazy';
 
 let sls: Serverless;

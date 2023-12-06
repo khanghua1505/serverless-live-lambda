@@ -1,11 +1,12 @@
 import express from 'express';
 import https from 'https';
-import {Events, useBus} from '../bus.js';
-import {lazy} from '../utils/lazy.js';
 import {URL} from 'url';
+
+import {Events, useBus} from '../bus.js';
 import {useGlobalLog} from '../logger.js';
-import {useRuntimeWorkers} from './workers.js';
 import {useServerlessOptions} from '../serverless.js';
+import {lazy} from '../utils/lazy.js';
+import {useRuntimeWorkers} from './workers.js';
 
 export const useRuntimeServerConfig = lazy(async () => {
   const opts = useServerlessOptions();

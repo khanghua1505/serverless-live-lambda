@@ -1,7 +1,7 @@
-import {isDebug} from '../serverless.js';
-import {lazy} from '../utils/lazy.js';
 import {useBus} from '../bus.js';
 import {useIOT} from '../iot.js';
+import {isDebug} from '../serverless.js';
+import {lazy} from '../utils/lazy.js';
 
 declare module '../bus.js' {
   export interface Events {

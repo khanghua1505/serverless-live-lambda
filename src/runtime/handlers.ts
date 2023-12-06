@@ -1,13 +1,14 @@
 import fs from 'fs/promises';
 import path from 'path';
 import {FunctionDefinitionHandler, FunctionDefinitionImage} from 'serverless';
+
+import {useBus} from '../bus';
+import {useGlobalLog} from '../logger';
 import {isDebug, useFunctions, useServerless} from '../serverless';
 import {lazy} from '../utils/lazy';
 import {Semaphore} from '../utils/semaphore.js';
-import {useBus} from '../bus';
-import {useGlobalLog} from '../logger';
-import {useGoHandler} from './handlers/go';
 import {useWatcher} from '../watcher';
+import {useGoHandler} from './handlers/go';
 
 declare module '../bus.js' {
   export interface Events {

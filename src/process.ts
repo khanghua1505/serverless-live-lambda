@@ -4,10 +4,11 @@ import {
   LambdaClient,
   UpdateFunctionConfigurationCommand,
 } from '@aws-sdk/client-lambda';
-import {lazy} from './utils/lazy';
+
 import {useAWSClient} from './credentials';
-import {useFunctions} from './serverless';
 import {useGlobalLog} from './logger';
+import {useFunctions} from './serverless';
+import {lazy} from './utils/lazy';
 
 export const useProcess = lazy(() => {
   const functions = useFunctions().all;

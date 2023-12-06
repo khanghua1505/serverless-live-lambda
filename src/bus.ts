@@ -1,5 +1,6 @@
-import {lazy} from './utils/lazy.js';
 import {randomBytes} from 'crypto';
+
+import {lazy} from './utils/lazy.js';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Events {}

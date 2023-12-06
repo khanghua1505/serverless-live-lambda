@@ -163,8 +163,9 @@ to your codes.
 You can find the libraries here:
 
 | Language | Library                                              |
-| -------- | ---------------------------------------------------- |
+|----------|------------------------------------------------------|
 | Go       | github.com/aboutkh/serverless-live-lambda/support/go |
+
 
 For Go example:
 
@@ -187,5 +188,5 @@ func main() {
 ## Examples
 
 | Name                 | Language | Link                                                                                                         |
-| -------------------- | -------- | ------------------------------------------------------------------------------------------------------------ |
+|----------------------|----------|--------------------------------------------------------------------------------------------------------------|
 | graphql-apigw-lambda | Go       | [Example Link](https://github.com/aboutkh/serverless-live-lambda/tree/main/examples/go/graphql-apigw-lambda) |

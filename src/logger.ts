@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import randColor from 'randomcolor';
+
+import {useFunctions, useLog} from './serverless';
 import {lazy} from './utils/lazy';
 import {timeNow} from './utils/time';
-import {useFunctions, useLog} from './serverless';
 
 const useColorMap = lazy(() => {
   const colorMap = new Map<string, string>();

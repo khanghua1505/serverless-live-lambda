@@ -1,13 +1,14 @@
+import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
 import os from 'os';
 import path from 'path';
-import {ChildProcessWithoutNullStreams, spawn} from 'child_process';
-import {execAsync} from '../../utils/process';
-import {findAbove, isChild} from '../../utils/fs';
 import {FunctionDefinitionHandler} from 'serverless';
+
+import {useServerless} from '../../serverless';
+import {findAbove, isChild} from '../../utils/fs';
+import {execAsync} from '../../utils/process';
 import {RuntimeHandler} from '../handlers';
 import {useRuntimeServerConfig} from '../server';
 import {useRuntimeWorkers} from '../workers';
-import {useServerless} from '../../serverless';
 
 export const useGoHandler = (): RuntimeHandler => {
   const sls = useServerless();
@@ -81,7 +82,7 @@ export const useGoHandler = (): RuntimeHandler => {
         if (custom?.cmd) {
           const cmd = custom.cmd;
           buildCmd = [
-            cmd.replaceAll(/GOOS=([^\s]+)|GOARCH=([^\s]+)/gi, ''),
+            cmd.replaceAll(/GOOS=(\S+)|GOARCH=(\S+)/gi, ''),
             `-o "${target}"`,
             `./${srcPath}`,
           ].join(' ');

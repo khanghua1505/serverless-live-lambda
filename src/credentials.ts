@@ -1,5 +1,5 @@
-import {lazy} from './utils/lazy';
 import {useLog, useServerless} from './serverless';
+import {lazy} from './utils/lazy';
 
 export const useAWSProvider = lazy(() => {
   const sls = useServerless();

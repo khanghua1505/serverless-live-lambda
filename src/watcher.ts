@@ -1,8 +1,9 @@
 import chokidar from 'chokidar';
 import path from 'path';
-import {lazy} from './utils/lazy.js';
+
 import {useBus} from './bus.js';
 import {useServerless} from './serverless.js';
+import {lazy} from './utils/lazy.js';
 
 declare module './bus.js' {
   export interface Events {

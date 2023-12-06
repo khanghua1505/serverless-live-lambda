@@ -1,15 +1,16 @@
-import iot from 'aws-iot-device-sdk';
-import path from 'path';
 import {DescribeEndpointCommand, IoTClient} from '@aws-sdk/client-iot';
-import {EventPayload, Events, EventTypes, useBus} from './bus';
-import {gzip} from './utils/zip';
-import {lazy} from './utils/lazy';
 import {PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
+import iot from 'aws-iot-device-sdk';
 import {randomUUID} from 'crypto';
+import path from 'path';
+
+import {EventPayload, Events, EventTypes, useBus} from './bus';
 import {useAWSClient, useAWSCredentials, useAWSProvider} from './credentials';
+import {VisibleError} from './errors';
 import {useGlobalLog} from './logger';
 import {useServerless} from './serverless';
-import {VisibleError} from './errors';
+import {lazy} from './utils/lazy';
+import {gzip} from './utils/zip';
 
 export const useIOTEndpoint = lazy(async () => {
   const log = useGlobalLog();

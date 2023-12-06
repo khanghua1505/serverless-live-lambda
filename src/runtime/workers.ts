@@ -1,6 +1,6 @@
+import {useBus} from '../bus.js';
 import {isDebug, useFunctions} from '../serverless.js';
 import {lazy} from '../utils/lazy.js';
-import {useBus} from '../bus.js';
 import {useFunctionBuilder, useRuntimeHandlers} from './handlers.js';
 import {useRuntimeServerConfig} from './server.js';
 

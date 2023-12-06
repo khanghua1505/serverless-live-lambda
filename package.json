@@ -21,15 +21,15 @@
     "clean": "gts clean",
     "compile": "node esbuild.js",
     "fix": "gts fix",
-    "prepare": "pnpm compile",
-    "pretest": "pnpm compile",
-    "posttest": "pnpm lint"
+    "prepare": "pnpm run compile",
+    "pretest": "pnpm run compile",
+    "posttest": "pnpm run lint"
   },
   "dependencies": {
     "@aws-sdk/client-iot": "^3.454.0",
+    "@aws-sdk/client-lambda": "^3.454.0",
     "@aws-sdk/client-s3": "^3.456.0",
     "aws-iot-device-sdk": "^2.2.13",
-    "@aws-sdk/client-lambda": "^3.454.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "dotenv": "^16.3.1",
@@ -44,6 +44,7 @@
     "@types/randomcolor": "^0.5.9",
     "@types/serverless": "^3.12.18",
     "esbuild": "^0.19.7",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "gts": "^5.2.0",
     "typescript": "~5.2.0"
   }
