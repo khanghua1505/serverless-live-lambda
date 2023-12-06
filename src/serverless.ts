@@ -28,7 +28,7 @@ export const useFunctions = lazy(() => {
   let filtered = functions;
   let regex = new RegExp('.*');
 
-  const result = {
+  return {
     get all() {
       return filtered;
     },
@@ -49,7 +49,6 @@ export const useFunctions = lazy(() => {
       return Object.values(filtered).find(func => func.name === id);
     },
   };
-  return result;
 });
 
 let serverlessOpts: any;

@@ -55,7 +55,7 @@ export const useIOTBridge = lazy(async () => {
       evt.properties.workerId = cache.get(evt.properties.requestId)!;
       cache.delete(evt.properties.requestId);
     }
-    iot.publish(
+    await iot.publish(
       topic + '/' + evt.properties.workerId,
       'function.success',
       evt.properties
@@ -66,14 +66,14 @@ export const useIOTBridge = lazy(async () => {
       evt.properties.workerId = cache.get(evt.properties.requestId)!;
       cache.delete(evt.properties.requestId);
     }
-    iot.publish(
+    await iot.publish(
       topic + '/' + evt.properties.workerId,
       'function.error',
       evt.properties
     );
   });
   bus.subscribe('function.ack', async evt => {
-    iot.publish(
+    await iot.publish(
       topic + '/' + evt.properties.workerId,
       'function.ack',
       evt.properties

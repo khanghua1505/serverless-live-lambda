@@ -27,7 +27,7 @@ export const useConsole = lazy(() => {
     const functionId = evt.properties.functionId;
     const log = useGlobalLog();
 
-    let metric = metrics.get(functionId);
+    let metric = metrics.get(functionId)!;
     if (!metric) {
       metric = {} as FunctionMetric;
       metrics.set(functionId, metric);

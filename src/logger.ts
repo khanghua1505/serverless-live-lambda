@@ -20,7 +20,7 @@ export const useFunctionLog = (functionId: string) => {
   const props = useFunctions().fromId(functionId);
   const color = chalk.hex(colorMap.get(functionId)!);
 
-  const result = {
+  return {
     debug: (message: string, ...args: any[]) => {
       log.debug(
         `${color(props?.name)} ${color(timeNow())} ${message}`,
@@ -56,14 +56,12 @@ export const useFunctionLog = (functionId: string) => {
     hex: chalk.hex,
     primary: chalk.hex('#FF9000'),
   };
-
-  return result;
 };
 
 export const useGlobalLog = () => {
   const log = useLog();
 
-  const result = {
+  return {
     debug: (message: string, ...args: any[]) => {
       log.debug(`${message}`, ...args);
     },
@@ -84,6 +82,4 @@ export const useGlobalLog = () => {
     hex: chalk.hex,
     primary: chalk.hex('#FF9000'),
   };
-
-  return result;
 };

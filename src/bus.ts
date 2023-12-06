@@ -32,7 +32,7 @@ export const useBus = lazy(() => {
 
   const sourceID = randomBytes(16).toString('hex');
 
-  const result = {
+  return {
     sourceID,
     publish<Type extends EventTypes>(type: Type, properties: Events[Type]) {
       const payload: EventPayload<Type> = {
@@ -74,6 +74,4 @@ export const useBus = lazy(() => {
       };
     },
   };
-
-  return result;
 });

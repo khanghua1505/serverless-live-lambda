@@ -29,16 +29,9 @@ import {
 } from './serverless';
 
 class ServerlessLiveLambdaPlugin implements Plugin {
-  private readonly serverless: any;
-  private readonly serviceName: string;
-  private readonly stage: string;
-  private readonly debug: boolean;
-  private readonly filterOpt: string;
-
   hooks = {
     'start:run': this.run.bind(this),
   };
-
   commands = {
     start: {
       usage: 'Start your lambda function locally',
@@ -64,6 +57,11 @@ class ServerlessLiveLambdaPlugin implements Plugin {
       },
     },
   };
+  private readonly serverless: any;
+  private readonly serviceName: string;
+  private readonly stage: string;
+  private readonly debug: boolean;
+  private readonly filterOpt: string;
 
   constructor(serverless: Serverless, options: any, {log}: Plugin.Logging) {
     this.serverless = serverless;
@@ -136,8 +134,8 @@ class ServerlessLiveLambdaPlugin implements Plugin {
 
     const builder = useFunctionBuilder();
     for (const opts of Object.values(functions)) {
-      builder.build(opts.name!);
-      this.updateLiveLambdaModeFunctionEnvs(opts.name!);
+      await builder.build(opts.name!);
+      await this.updateLiveLambdaModeFunctionEnvs(opts.name!);
     }
   }
 
@@ -146,8 +144,7 @@ class ServerlessLiveLambdaPlugin implements Plugin {
     const input = new GetFunctionConfigurationCommand({
       FunctionName: functionName,
     });
-    const output = await lambda.send(input);
-    return output;
+    return await lambda.send(input);
   }
 
   private async updateLiveLambdaModeFunctionEnvs(functionId: string) {
