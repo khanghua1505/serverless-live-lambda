@@ -93,7 +93,9 @@ export const useRuntimeHandlers = lazy(() => {
             errors: [`Function with ID "${functionId}" not found`],
           };
         }
-        const handler = result.for(func.runtime!);
+        const runtime =
+          func.runtime || sls.service.provider.runtime || 'unkown';
+        const handler = result.for(runtime);
         const serverlessDir = path.join(sls.serviceDir, '.serverless');
         const out = path.join(serverlessDir, 'artifacts', functionId);
         await fs.rm(out, {recursive: true, force: true});
