@@ -30,6 +30,7 @@ export const useWatcher = lazy(() => {
       '**/.git/**',
       '**/debug.log',
       '**/.serverless/**',
+      '**/vendor/**',
     ],
     awaitWriteFinish: {
       pollInterval: 100,

@@ -27,7 +27,7 @@ export const useProcess = lazy(() => {
           [
             `Clean up error ${err}`,
             'Please manually remove `SLS_LIVE_LAMBDA_ENABLED=true`.',
-          ].join(' ')
+          ].join('\n')
         );
         process.exit(1);
       });
@@ -58,7 +58,7 @@ async function cleanUpLambda(functionId: string) {
       [
         `Clean up ${functionId} error`,
         'Please manually remove `SLS_LIVE_LAMBDA_ENABLED=true`.',
-      ].join(' ')
+      ].join('\n')
     );
   }
 }

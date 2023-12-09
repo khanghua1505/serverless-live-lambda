@@ -50,7 +50,7 @@ export const useIOT = lazy(async () => {
   const sls = useServerless();
   const endpoint = await useIOTEndpoint();
   const provider = useAWSProvider();
-  const creds = await useAWSCredentials();
+  const cred = await useAWSCredentials();
   const serviceName = sls.service.getServiceName();
   const stage = provider.getStage();
 
@@ -102,9 +102,9 @@ export const useIOT = lazy(async () => {
     host: endpoint,
     region: provider.getRegion(),
     clientId: clientId,
-    accessKeyId: creds.accessKeyId,
-    secretKey: creds.secretAccessKey,
-    sessionToken: creds.sessionToken,
+    accessKeyId: cred.accessKeyId,
+    secretKey: cred.secretAccessKey,
+    sessionToken: cred.sessionToken,
     reconnectPeriod: 1,
   });
   const PREFIX = `serverless/${serviceName}/${stage}`;

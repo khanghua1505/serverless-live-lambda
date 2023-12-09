@@ -32,6 +32,7 @@ class ServerlessLiveLambdaPlugin implements Plugin {
   hooks = {
     'start:run': this.run.bind(this),
   };
+
   commands = {
     start: {
       usage: 'Start your lambda function locally',
@@ -57,6 +58,7 @@ class ServerlessLiveLambdaPlugin implements Plugin {
       },
     },
   };
+
   private readonly serverless: any;
   private readonly serviceName: string;
   private readonly stage: string;
@@ -70,6 +72,7 @@ class ServerlessLiveLambdaPlugin implements Plugin {
     this.stage = serverless.service.provider.stage;
     this.debug = (options?.mode || options?.m) === 'debug';
     this.filterOpt = options?.filter || options.f || '.*';
+
     this.loadEnvs();
     if (this.debug) {
       setDebugMode();
@@ -77,7 +80,6 @@ class ServerlessLiveLambdaPlugin implements Plugin {
     setServerless(serverless);
     setLog(log);
     setServerlessOptions(options);
-    this.setServerlessEnvs();
   }
 
   async run() {
@@ -88,9 +90,10 @@ class ServerlessLiveLambdaPlugin implements Plugin {
       [
         'Automatically set SLS_LIVE_LAMBDA_ENABLED=true to forward messages from Lambda to the local machine.',
         'This option poses a potential danger in a production environment,',
-        'so please use it exclusively for development purposes.\n',
-      ].join(' ')
+        'so please use it exclusively for development purposes.',
+      ].join('\n')
     );
+
     useFunctions().applyFilter(this.filterOpt);
     const functions = useFunctions().all;
 
@@ -114,11 +117,10 @@ class ServerlessLiveLambdaPlugin implements Plugin {
       }
       log.info(
         [
-          '\n',
           'Debug mode for the server started successfully.',
           "Now, there's only one step left to debug your code on your local machine.",
-          'Configure your debugger to load the generated environment file located at `${workspaceFolder}/.serverless/.env.${function}`.\n',
-        ].join(' ')
+          'Configure your debugger to load the generated environment file located at `${workspaceFolder}/.serverless/.env.${function}`.',
+        ].join('\n')
       );
     }
 
@@ -159,7 +161,7 @@ class ServerlessLiveLambdaPlugin implements Plugin {
           `Get lambda function ${functionId} configuration error.`,
           'The error may be due to a lack of permission to access the lambda function,',
           'or the function may not be deployed. Ensure that the function is deployed before starting local development.',
-        ].join(' ')
+        ].join('\n')
       );
       throw err;
     }
@@ -180,21 +182,19 @@ class ServerlessLiveLambdaPlugin implements Plugin {
     );
   }
 
-  private setServerlessEnvs() {
-    const envs: Record<string, string> = {
-      SLS_SERVICE_NAME: this.serverless.service.getServiceName(),
-      SLS_STAGE: this.serverless.service.provider.stage,
-    };
-    Object.keys(envs).forEach(key => {
-      this.serverless.service.provider.environment[key] = envs[key];
-    });
-  }
-
   private loadEnvs() {
     const envFiles = ['.env', `.env.${this.stage}`, `.env.${this.stage}.local`];
     envFiles.map(fileName => {
       const parsed = dotenv.config({path: fileName});
       return dotenvExpand.expand(parsed).parsed;
+    });
+
+    const envs: Record<string, string> = {
+      SLS_SERVICE_NAME: this.serverless.service.getServiceName(),
+      SLS_STAGE: this.serverless.service.provider.stage,
+    };
+    Object.entries(envs).forEach(([key, value]) => {
+      this.serverless.service.provider.environment[key] = value;
     });
   }
 }

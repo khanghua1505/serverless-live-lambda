@@ -94,7 +94,7 @@ export const useRuntimeHandlers = lazy(() => {
           };
         }
         const runtime =
-          func.runtime || sls.service.provider.runtime || 'unkown';
+          func.runtime || sls.service.provider.runtime || 'unknown';
         const handler = result.for(runtime);
         const serverlessDir = path.join(sls.serviceDir, '.serverless');
         const out = path.join(serverlessDir, 'artifacts', functionId);

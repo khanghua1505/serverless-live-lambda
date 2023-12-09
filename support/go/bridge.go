@@ -117,7 +117,9 @@ func (b *Bride) Switch(ctx context.Context, e json.RawMessage) (any, error) {
 		}
 
 		topic := fmt.Sprintf("%s/events/%s", prefix, b.iot.clientID)
-		b.iot.Subscribe(ctx, topic)
+		if err := b.iot.Subscribe(ctx, topic); err != nil {
+			log.Panicf("subscribe to %q failed %v\n", topic, err)
+		}
 
 		for _, env := range os.Environ() {
 			pair := strings.Split(env, "=")

@@ -40,7 +40,6 @@ export const useIOTBridge = lazy(async () => {
   const iot = await useIOT();
   const topic = `${iot.prefix}/events`;
   const debug = isDebug();
-
   const cache = new Map<string, string>();
 
   if (debug) {
@@ -61,6 +60,7 @@ export const useIOTBridge = lazy(async () => {
       evt.properties
     );
   });
+
   bus.subscribe('function.error', async evt => {
     if (debug) {
       evt.properties.workerId = cache.get(evt.properties.requestId)!;
@@ -72,6 +72,7 @@ export const useIOTBridge = lazy(async () => {
       evt.properties
     );
   });
+
   bus.subscribe('function.ack', async evt => {
     await iot.publish(
       topic + '/' + evt.properties.workerId,
