@@ -9,7 +9,7 @@ devDependencies:
     specifier: ^2.2.0
     version: 2.2.0
   serverless-live-lambda:
-    specifier: ^0.1.8
+    specifier: ^0.1
     version: 0.1.8
 
 packages:
