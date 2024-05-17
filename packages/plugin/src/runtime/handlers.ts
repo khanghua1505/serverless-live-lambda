@@ -3,11 +3,11 @@ import path from 'path';
 import {FunctionDefinitionHandler} from 'serverless';
 
 import {useBus} from '../bus';
-import {useGlobalLog} from '../logger';
-import {isDebug, useFunctions, useServerless} from '../serverless';
-import {lazy} from '../utils/lazy';
+import {useGlobalLog} from '../logger.js';
+import {isDebug, useFunctions, useServerless} from '../serverless.js';
+import {lazy} from '../utils/lazy.js';
 import {Semaphore} from '../utils/semaphore.js';
-import {useWatcher} from '../watcher';
+import {useWatcher} from '../watcher.js';
 import {useGoHandler} from './handlers/go.js';
 import {useNodeJsHandler} from './handlers/nodejs.js';
 
