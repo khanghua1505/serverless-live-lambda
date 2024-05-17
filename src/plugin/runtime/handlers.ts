@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import {FunctionDefinitionHandler, FunctionDefinitionImage} from 'serverless';
+import {FunctionDefinitionHandler} from 'serverless';
 
 import {useBus} from '../bus';
 import {useGlobalLog} from '../logger';
@@ -8,7 +8,8 @@ import {isDebug, useFunctions, useServerless} from '../serverless';
 import {lazy} from '../utils/lazy';
 import {Semaphore} from '../utils/semaphore.js';
 import {useWatcher} from '../watcher';
-import {useGoHandler} from './handlers/go';
+import {useGoHandler} from './handlers/go.js';
+import {useNodeJsHandler} from './handlers/nodejs.js';
 
 declare module '../bus.js' {
   export interface Events {
@@ -28,7 +29,7 @@ declare module '../bus.js' {
 interface BuildInput {
   functionId: string;
   out: string;
-  props: FunctionDefinitionHandler | FunctionDefinitionImage;
+  props: FunctionDefinitionHandler;
 }
 
 export interface StartWorkerInput {
@@ -55,7 +56,6 @@ export interface RuntimeHandler {
     | {
         type: 'success';
         handler: string;
-        sourcemap?: string;
       }
     | {
         type: 'error';
@@ -65,7 +65,7 @@ export interface RuntimeHandler {
 }
 
 export const useRuntimeHandlers = lazy(() => {
-  const handlers: RuntimeHandler[] = [useGoHandler()];
+  const handlers: RuntimeHandler[] = [useGoHandler(), useNodeJsHandler()];
   const sls = useServerless();
   const bus = useBus();
 
@@ -85,7 +85,9 @@ export const useRuntimeHandlers = lazy(() => {
     },
     async build(functionId: string) {
       async function task() {
-        const func = useFunctions().fromId(functionId);
+        const func = useFunctions().fromId(
+          functionId
+        ) as FunctionDefinitionHandler;
 
         if (!func) {
           return {
@@ -120,7 +122,6 @@ export const useRuntimeHandlers = lazy(() => {
         return {
           ...built,
           out,
-          sourcemap: built.sourcemap,
         };
       }
 
