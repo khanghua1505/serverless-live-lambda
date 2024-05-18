@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "build/src"
+    "dist"
   ],
   "license": "MIT",
   "keywords": [],
@@ -33,16 +33,17 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.138",
     "@types/aws-iot-device-sdk": "^2.2.8",
+    "@types/aws-lambda": "^8.10.138",
     "@types/express": "^4.17.21",
     "@types/node": "20.8.2",
     "@types/randomcolor": "^0.5.9",
     "@types/serverless": "^3.12.18",
     "@types/uuid": "^9.0.8",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
     "gts": "^5.2.0",
-    "typescript": "~5.2.0"
+    "serverless": "^3.38.0",
+    "typescript": "~5.2.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0"
   },
   "engines": {
     "node": ">=16"

@@ -80,7 +80,6 @@ interface Message {
 }
 
 function Bridge(): LambdaHandler {
-  console.log('Startt Request');
   const fragments = new Map<string, Array<Fragment>>();
   const results = Array<Message>();
   const environments: {[key: string]: string} = {};
@@ -157,7 +156,7 @@ function Bridge(): LambdaHandler {
 
   return async (event: any, context: LambdaContext) => {
     // Wait until for ready
-    while (unlock) {
+    while (!unlock) {
       await delay(100);
     }
 

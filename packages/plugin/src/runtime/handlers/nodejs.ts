@@ -13,38 +13,38 @@ export const useNodeJsHandler = (): RuntimeHandler => {
   const rebuildCache: Record<
     string,
     {
-      result: esbuild.BuildResult;
-      ctx: esbuild.BuildContext;
+      project: string;
+      handler: string;
+      out: string;
+      file: string;
+
+      shouldReload: boolean;
+
+      result?: esbuild.BuildResult;
+      ctx?: esbuild.BuildContext;
     }
   > = {};
-  const sources = new Map<
-    string,
-    {
-      project: string;
-      outfile: string;
-      handler: string;
-    }
-  >();
   const threads = new Map<string, Worker>();
 
   return {
     shouldBuild: input => {
       const cache = rebuildCache[input.functionId];
       if (!cache) return false;
-      const parent = sources.get(input.functionId)!;
+      if (cache.shouldReload) return true;
       const relative = path
-        .relative(parent.project, input.file)
+        .relative(cache.project, input.file)
         .split(path.sep)
         .join(path.posix.sep);
-      return Boolean(cache.result.metafile?.inputs[relative]);
+      return Boolean(cache.result?.metafile?.inputs[relative]);
     },
     canHandle: input => input.startsWith('nodejs'),
     startWorker: async input => {
       const workers = await useRuntimeWorkers();
       const server = await useRuntimeServerConfig();
-      new Promise((resolve, reject) => {
+      const cache = rebuildCache[input.functionId];
+      new Promise(() => {
         const worker = new Worker(
-          path.join(__dirname, './support/nodejs/runtime.js'),
+          path.join(__dirname, './node-ric/index.cjs'),
           {
             env: {
               ...process.env,
@@ -53,7 +53,11 @@ export const useNodeJsHandler = (): RuntimeHandler => {
               AWS_LAMBDA_RUNTIME_API: `localhost:${server.port}/${input.workerId}`,
             },
             execArgv: ['--enable-source-maps'],
-            workerData: input,
+            workerData: {
+              ...input,
+              out: cache.out,
+              file: cache.file,
+            },
             stdout: true,
             stdin: true,
             stderr: true,
@@ -65,13 +69,8 @@ export const useNodeJsHandler = (): RuntimeHandler => {
         worker.stderr.on('data', (data: Buffer) => {
           workers.stdout(input.workerId, data.toString());
         });
-        worker.on('exit', code => {
+        worker.on('exit', () => {
           workers.exited(input.workerId);
-          if (code !== 0) {
-            reject(code);
-            return;
-          }
-          resolve(code);
         });
         threads.set(input.workerId, worker);
       });
@@ -81,10 +80,8 @@ export const useNodeJsHandler = (): RuntimeHandler => {
       await worker?.terminate();
     },
     build: async input => {
-      const [app, handler] = path.basename(input.props.handler).split('.');
-      const appRoot = path.join(path.dirname(input.props.handler), app);
-      const isDir = (await fs.stat(appRoot)).isDirectory();
-      const file = [
+      const [rootPath, exportFunction] = resolveHandler(input.props.handler);
+      const extensions = [
         '.ts',
         '.tsx',
         '.mts',
@@ -93,11 +90,15 @@ export const useNodeJsHandler = (): RuntimeHandler => {
         '.jsx',
         '.mjs',
         '.cjs',
-      ]
-        .map(ext => (isDir ? path.join(appRoot, 'index' + ext) : appRoot + ext))
-        .find(file => {
-          return fsSync.existsSync(file);
-        });
+      ];
+
+      const file = [
+        rootPath,
+        ...extensions.map(ext => rootPath + ext),
+        ...extensions.map(ext => path.join(rootPath, 'index' + ext)),
+      ].find(file => {
+        return fsSync.existsSync(file);
+      });
       if (!file) {
         return {
           type: 'error',
@@ -105,13 +106,31 @@ export const useNodeJsHandler = (): RuntimeHandler => {
         };
       }
 
-      const project = await findAbove(appRoot || '.', 'package.json');
+      const project = await findAbove(rootPath || '.', 'package.json');
       if (!project) {
         return {
           type: 'error',
           errors: [
             `Could not find file package.json file for handler "${input.props.handler}"`,
           ],
+        };
+      }
+
+      const canBuild = ['.ts', '.tsx', '.mts', '.cts'].find(ext =>
+        file.endsWith(ext)
+      );
+      if (!canBuild) {
+        rebuildCache[input.functionId] = {
+          project,
+          out: project,
+          handler: exportFunction,
+          file,
+          shouldReload: true,
+        };
+
+        return {
+          type: 'success',
+          handler: exportFunction,
         };
       }
 
@@ -123,8 +142,8 @@ export const useNodeJsHandler = (): RuntimeHandler => {
       const isESM = (packageJson.type || '') === 'module';
 
       let ctx = rebuildCache[input.functionId]?.ctx;
+      const outdir = path.join(input.out, rootPath);
       if (!ctx) {
-        const outdir = path.join(input.out, app);
         const options: esbuild.BuildOptions = {
           entryPoints: [file],
           platform: 'node',
@@ -154,22 +173,21 @@ export const useNodeJsHandler = (): RuntimeHandler => {
           outdir: outdir,
           sourcemap: true,
         };
-        try {
-          ctx = await esbuild.context(options);
-        } catch (err) {
-          console.log(err);
-        }
 
-        sources.set(input.functionId, {
-          project,
-          outfile: '',
-          handler,
-        });
+        ctx = await esbuild.context(options);
       }
 
       try {
         const result = await ctx.rebuild();
-        rebuildCache[input.functionId] = {ctx, result};
+        rebuildCache[input.functionId] = {
+          project,
+          out: outdir,
+          handler: exportFunction,
+          file,
+          shouldReload: false,
+          ctx,
+          result,
+        };
         return {
           type: 'success',
           handler: input.props.handler,
@@ -195,3 +213,10 @@ export const useNodeJsHandler = (): RuntimeHandler => {
     },
   };
 };
+
+function resolveHandler(handler: string) {
+  const parts = handler.split(path.sep);
+  const [index, exportFunction] = parts[parts.length - 1].split('.');
+  const rootPath = path.join(...parts.slice(0, parts.length - 1), index);
+  return [rootPath, exportFunction];
+}

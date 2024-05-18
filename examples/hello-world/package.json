@@ -3,20 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Khang Hua",
+  "license": "MIT",
   "devDependencies": {
     "@aws-sdk/client-iot": "^3.577.0",
     "@types/aws-lambda": "^8.10.138",
-    "serverless-live-lambda": "../../"
+    "esbuild": "^0.19.7",
+    "serverless-esbuild": "^1.52.1",
+    "serverless-live-lambda": "../../packages/plugin"
   },
   "dependencies": {
-    "aws-iot-device-sdk": "^2.2.13",
-    "uuid": "^9.0.1",
-    "serverless-live-lambda-nodejs": "../../"
+    "node-bridge": "../../packages/node-bridge"
   }
 }

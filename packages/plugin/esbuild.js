@@ -1,7 +1,6 @@
-const {build} = require('esbuild');
+const esbuild = require('esbuild');
 
-// Build serverless-live-lambda
-build({
+esbuild.build({
   entryPoints: ['src/index.ts'],
   bundle: true,
   sourcemap: true,
@@ -10,13 +9,12 @@ build({
   outfile: 'dist/index.js',
 });
 
-// // Build support/nodejs/runtime
-// build({
-//   entryPoints: ['support/nodejs/runtime/index.ts'],
-//   format: 'esm',
-//   bundle: true,
-//   sourcemap: true,
-//   packages: 'external',
-//   platform: 'node',
-//   outfile: 'dist/support/nodejs/runtime.js',
-// });
+esbuild.build({
+  entryPoints: ['src/node-ric/index.ts'],
+  bundle: true,
+  sourcemap: true,
+  // format: 'esm',
+  packages: 'external',
+  platform: 'node',
+  outfile: 'dist/node-ric/index.cjs',
+});

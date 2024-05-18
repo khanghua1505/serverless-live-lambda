@@ -9,6 +9,8 @@
     "dist"
   ],
   "license": "MIT",
+  "scripts": {
+  },
   "keywords": [
     "serverless",
     "plugin",
@@ -17,7 +19,8 @@
     "aws"
   ],
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "engines": {
     "node": ">=16"
   }

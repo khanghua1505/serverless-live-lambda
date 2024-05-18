@@ -1,0 +1,44 @@
+{
+  "name": "@serverless-live-lambda/node-bridge",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "homepage": "https://github.com/aboutkh/serverless-live-lambda#readme",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "node esbuild.js",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "keywords": [
+    "serverless",
+    "plugin",
+    "sst",
+    "lambda",
+    "aws"
+  ],
+  "dependencies": {
+    "aws-iot-device-sdk": "^2.2.13",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-iot": "^3.454.0",
+    "@types/aws-lambda": "^8.10.138",
+    "esbuild": "^0.19.7",
+    "@types/uuid": "^9.0.8",
+    "@types/aws-iot-device-sdk": "^2.2.8",
+    "gts": "^5.2.0",
+    "typescript": "~5.2.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0"
+  }
+}
