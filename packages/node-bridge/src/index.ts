@@ -106,10 +106,10 @@ function Bridge(): LambdaHandler {
         console.info(`got fragment ${fragment.id} index ${fragment.index}`);
         let pending = fragments.get(fragment.id);
         if (!pending) {
-          pending = new Array<Fragment>(fragment.count);
+          pending = new Array<Fragment>();
           fragments.set(fragment.id, pending);
         }
-        pending[fragment.index] = fragment;
+        pending.push(fragment);
         if (pending.length === fragment.count) {
           console.info(`got all fragments ${fragment.id}`);
           fragments.delete(fragment.id);
