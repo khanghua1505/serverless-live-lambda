@@ -1,3 +1,7 @@
+/*******************************************
+ * Copy From SST Live Lambda Development
+ *******************************************/
+
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-process-exit */
 import {workerData} from 'node:worker_threads';
@@ -132,7 +136,7 @@ let fn: any;
         callbackWaitsForEmptyEventLoop: {
           set value(_value: boolean) {
             throw new Error(
-              '`callbackWaitsForEmptyEventLoop` on lambda Context is not implemented by SST Live Lambda Development.'
+              '`callbackWaitsForEmptyEventLoop` on lambda Context is not implemented.'
             );
           },
           get value() {
@@ -140,19 +144,13 @@ let fn: any;
           },
         }.value,
         done() {
-          throw new Error(
-            '`done` on lambda Context is not implemented by SST Live Lambda Development.'
-          );
+          throw new Error('`done` on lambda Context is not implemented.');
         },
         fail() {
-          throw new Error(
-            '`fail` on lambda Context is not implemented by SST Live Lambda Development.'
-          );
+          throw new Error('`fail` on lambda Context is not implemented.');
         },
         succeed() {
-          throw new Error(
-            '`succeed` on lambda Context is not implemented by SST Live Lambda Development.'
-          );
+          throw new Error('`succeed` on lambda Context is not implemented.');
         },
       };
       request = JSON.parse(result.body);
