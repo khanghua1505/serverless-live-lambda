@@ -11,9 +11,9 @@
     "@types/aws-lambda": "^8.10.138",
     "esbuild": "^0.19.7",
     "serverless-esbuild": "^1.52.1",
-    "serverless-live-lambda": "../../packages/plugin"
+    "serverless-live-lambda": "file:../../packages/plugin"
   },
   "dependencies": {
-    "node-bridge": "../../packages/node-bridge"
+    "node-bridge": "file:../../packages/node-bridge"
   }
 }

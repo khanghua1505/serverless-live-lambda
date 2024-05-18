@@ -28,32 +28,13 @@ provider:
             - "arn:aws:iot:*:*:topic/serverless/*"
             - "arn:aws:iot:*:*:topicfilter/serverless/*"
 
-# layers:
-#   hello:
-#     path: layers/hello
-#     compatibleRuntimes:
-#       - nodejs18.x
-#       - nodejs20.x
-#     compatibleArchitectures:
-#       - x86_64
-#       - arm64
-
 package:
   individually: true
   patterns:
     - "!*/**"
 
-custom:
-  esbuild:
-    bundle: true
-    minify: false
-    sourcemap: true
-    keepNames: true
-    packager: pnpm
-
 plugins:
   - serverless-live-lambda
-  - serverless-esbuild
 
 functions:
   hello:
