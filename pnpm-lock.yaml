@@ -19,9 +19,9 @@ importers:
 
   examples/hello-world:
     dependencies:
-      node-bridge:
-        specifier: file:../../packages/node-bridge
-        version: link:../../packages/node-bridge
+      serverless-live-lambda-node-bridge:
+        specifier: 0.1.1-alpha
+        version: 0.1.1-alpha
     devDependencies:
       '@aws-sdk/client-iot':
         specifier: ^3.577.0
@@ -35,9 +35,6 @@ importers:
       serverless-esbuild:
         specifier: ^1.52.1
         version: 1.52.1(esbuild@0.19.12)
-      serverless-live-lambda:
-        specifier: file:../../packages/plugin
-        version: link:../../packages/plugin
 
   packages/node-bridge:
     dependencies:
@@ -2900,6 +2897,10 @@ packages:
 
   serverless-go-plugin@2.4.0:
     resolution: {integrity: sha512-RHdSUkPdihY55j6pQLVhIWSnmJ+M0gmvDuaZy/mrtysxaRq3caQyUb2MMvXaVRa3vfHGBv0KoYFC/PD6fb2G/g==}
+
+  serverless-live-lambda-node-bridge@0.1.1-alpha:
+    resolution: {integrity: sha512-zSzVhs5ffNDiXSBMiWKdITG8uwb4CIt70h5p7bbCn5pO2aMM5TKklw2iV2UmqXArX75W4SUqU2mUhqd/2GlN5w==}
+    engines: {node: '>=16'}
 
   serverless-live-lambda@0.1.9:
     resolution: {integrity: sha512-lnGXe1g0KIdQ9v/hLTn3p8ODWG5IV41b7K5depIVJVABMcqanIp/gQ+DCHh6hsD2TLSDF//ipnuQo/TUrzGRIw==}
@@ -7110,6 +7111,15 @@ snapshots:
       lodash.merge: 4.6.2
       p-map: 3.0.0
       pretty-hrtime: 1.0.3
+
+  serverless-live-lambda-node-bridge@0.1.1-alpha:
+    dependencies:
+      aws-iot-device-sdk: 2.2.13
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
 
   serverless-live-lambda@0.1.9:
     dependencies:
