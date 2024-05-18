@@ -1,13 +1,8 @@
 {
   "name": "serverless-live-lambda",
-  "version": "0.1.9",
+  "version": "0.0.0",
   "description": "Live Lambda Development that allows you to debug and test your Lambda functions locally",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "homepage": "https://github.com/aboutkh/serverless-live-lambda#readme",
-  "files": [
-    "dist"
-  ],
+  "homepage": "https://github.com/khanghua1505/serverless-live-lambda#readme",
   "license": "MIT",
   "scripts": {
   },
@@ -23,5 +18,8 @@
   },
   "engines": {
     "node": ">=16"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
