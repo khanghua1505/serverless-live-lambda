@@ -1,12 +1,15 @@
-// const bridge = require('node-bridge');
 
-// exports.handler = bridge.wrap(() => {
-//   console.log('Hello world, hello');
-// });
+const crypto = require('crypto');
+const bridge = require('serverless-live-lambda-node-bridge');
 
-// exports.handler
-
-exports.handler = async function (event, context) {
-  console.log("EVENT - 111111: \n" + JSON.stringify(event, null, 2));
-  return context.logStreamName;
-};
+exports.handler = bridge(async (event) => {
+  const result = {}
+  for (let i = 0; i < 100; i++) {
+    const randStr = crypto.randomBytes(48).toString('base64')
+    result[i] = randStr
+  }
+  return {
+    statusCode: 200,
+    body: JSON.stringify(result, null, 2),
+  }
+});

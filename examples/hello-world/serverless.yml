@@ -31,7 +31,11 @@ provider:
 package:
   individually: true
   patterns:
-    - "!*/**"
+    - "!node_modules/**"
+
+layers:
+  bridge:
+    path: layers/bridge
 
 plugins:
   - serverless-live-lambda
@@ -43,3 +47,10 @@ functions:
     package:
       patterns:
         - "src/**"
+    layers:
+      - !Ref BridgeLambdaLayer
+    timeout: 25
+    events:
+      - httpApi:
+          method: ANY
+          path: /hello
