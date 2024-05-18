@@ -18,6 +18,8 @@ export const useNodeJsHandler = (): RuntimeHandler => {
       out: string;
       file: string;
 
+      isESM: boolean;
+
       shouldReload: boolean;
 
       result?: esbuild.BuildResult;
@@ -42,27 +44,28 @@ export const useNodeJsHandler = (): RuntimeHandler => {
       const workers = await useRuntimeWorkers();
       const server = await useRuntimeServerConfig();
       const cache = rebuildCache[input.functionId];
+      const nodeRic = cache.isESM
+        ? './node-ric/index.mjs'
+        : './node-ric/index.cjs';
       new Promise(() => {
-        const worker = new Worker(
-          path.join(__dirname, './node-ric/index.cjs'),
-          {
-            env: {
-              ...process.env,
-              ...input.environment,
-              IS_LOCAL: 'true',
-              AWS_LAMBDA_RUNTIME_API: `localhost:${server.port}/${input.workerId}`,
-            },
-            execArgv: ['--enable-source-maps'],
-            workerData: {
-              ...input,
-              out: cache.out,
-              file: cache.file,
-            },
-            stdout: true,
-            stdin: true,
-            stderr: true,
-          }
-        );
+        console.log('Start worker');
+        const worker = new Worker(path.join(__dirname, nodeRic), {
+          env: {
+            ...process.env,
+            ...input.environment,
+            IS_LOCAL: 'true',
+            AWS_LAMBDA_RUNTIME_API: `localhost:${server.port}/${input.workerId}`,
+          },
+          execArgv: ['--enable-source-maps'],
+          workerData: {
+            ...input,
+            out: cache.out,
+            file: cache.file,
+          },
+          stdout: true,
+          stdin: true,
+          stderr: true,
+        });
         worker.stdout.on('data', (data: Buffer) => {
           workers.stdout(input.workerId, data.toString());
         });
@@ -116,6 +119,13 @@ export const useNodeJsHandler = (): RuntimeHandler => {
         };
       }
 
+      const packageJson = JSON.parse(
+        await fs.readFile(path.join(project, 'package.json'), {
+          encoding: 'utf-8',
+        })
+      );
+      const isESM = (packageJson.type || '') === 'module';
+
       const canBuild = ['.ts', '.tsx', '.mts', '.cts'].find(ext =>
         file.endsWith(ext)
       );
@@ -126,6 +136,7 @@ export const useNodeJsHandler = (): RuntimeHandler => {
           handler: exportFunction,
           file,
           shouldReload: true,
+          isESM,
         };
 
         return {
@@ -133,13 +144,6 @@ export const useNodeJsHandler = (): RuntimeHandler => {
           handler: exportFunction,
         };
       }
-
-      const packageJson = JSON.parse(
-        await fs.readFile(path.join(project, 'package.json'), {
-          encoding: 'utf-8',
-        })
-      );
-      const isESM = (packageJson.type || '') === 'module';
 
       let ctx = rebuildCache[input.functionId]?.ctx;
       const outdir = path.join(input.out, rootPath);
@@ -187,6 +191,7 @@ export const useNodeJsHandler = (): RuntimeHandler => {
           shouldReload: false,
           ctx,
           result,
+          isESM,
         };
         return {
           type: 'success',

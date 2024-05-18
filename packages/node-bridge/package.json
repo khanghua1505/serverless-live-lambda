@@ -2,11 +2,16 @@
   "name": "@serverless-live-lambda/node-bridge",
   "version": "0.1.0",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "homepage": "https://github.com/aboutkh/serverless-live-lambda#readme",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "license": "MIT",
   "scripts": {
     "lint": "gts lint",

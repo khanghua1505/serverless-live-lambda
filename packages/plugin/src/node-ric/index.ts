@@ -72,6 +72,7 @@ let fn: any;
 
 (async () => {
   try {
+    console.log('Go hetete');
     const relative = path.relative(__dirname, file);
     const mod = require(relative);
     const handler = input.handler;
@@ -156,6 +157,7 @@ let fn: any;
       };
       request = JSON.parse(result.body);
     } catch (err) {
+      console.log(err);
       await new Promise(resolve => setTimeout(resolve, 100));
       continue;
     }

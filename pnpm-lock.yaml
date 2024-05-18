@@ -20,7 +20,7 @@ importers:
   examples/hello-world:
     dependencies:
       node-bridge:
-        specifier: ../../packages/node-bridge
+        specifier: file:../../packages/node-bridge
         version: link:../../packages/node-bridge
     devDependencies:
       '@aws-sdk/client-iot':
@@ -36,7 +36,7 @@ importers:
         specifier: ^1.52.1
         version: 1.52.1(esbuild@0.19.12)
       serverless-live-lambda:
-        specifier: ../../packages/plugin
+        specifier: file:../../packages/plugin
         version: link:../../packages/plugin
 
   packages/node-bridge:
