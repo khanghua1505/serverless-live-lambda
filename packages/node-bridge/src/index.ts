@@ -189,10 +189,10 @@ function delay(ms: number) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-export function wrap(handler: LambdaHandler): LambdaHandler {
+export = (handler: LambdaHandler): LambdaHandler => {
   const isLive = (serverlessLiveLambdaEnabled || '').toLowerCase();
   if (isLive === '1' || isLive === 'true') {
     return Bridge();
   }
   return handler;
-}
+};
