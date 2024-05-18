@@ -48,7 +48,6 @@ export const useNodeJsHandler = (): RuntimeHandler => {
         ? './node-ric/index.mjs'
         : './node-ric/index.cjs';
       new Promise(() => {
-        console.log('Start worker');
         const worker = new Worker(path.join(__dirname, nodeRic), {
           env: {
             ...process.env,

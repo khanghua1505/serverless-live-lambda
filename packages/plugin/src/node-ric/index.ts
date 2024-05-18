@@ -72,9 +72,8 @@ let fn: any;
 
 (async () => {
   try {
-    console.log('Go hetete');
     const relative = path.relative(__dirname, file);
-    const mod = require(relative);
+    const mod = await import(relative);
     const handler = input.handler;
     fn = mod[handler];
     if (!fn) {
@@ -85,6 +84,7 @@ let fn: any;
       );
     }
   } catch (ex: any) {
+    console.error('Runtime error', ex);
     await fetch({
       path: '/runtime/init/error',
       method: 'POST',
@@ -157,7 +157,7 @@ let fn: any;
       };
       request = JSON.parse(result.body);
     } catch (err) {
-      console.log(err);
+      console.error('Runtime error', err);
       await new Promise(resolve => setTimeout(resolve, 100));
       continue;
     }
@@ -181,7 +181,7 @@ let fn: any;
         });
         break;
       } catch (ex) {
-        console.error(ex);
+        console.error('Runtime error', ex);
         await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
