@@ -1,10 +1,13 @@
+import zlib from 'node:zlib';
+
 import type {
   Context as LambdaContext,
   Handler as LambdaHandler,
 } from 'aws-lambda';
-import {v4 as uuidv4} from 'uuid';
+import crypto from 'crypto';
 
 import {useIoT} from './iot';
+import {useS3} from './s3';
 
 const serverlessApp = process.env.SLS_SERVICE_NAME!;
 const serverlessStage = process.env.SLS_STAGE!;
@@ -89,10 +92,13 @@ function Bridge(): LambdaHandler {
     }
   }
 
+  const s3 = useS3();
+
   let onresult: (msg: Message) => void;
   let publish: (msg: Message) => Promise<void>;
   let clientId: string;
   let unlock = false;
+
   useIoT()
     .then(iot => {
       clientId = iot.clientId;
@@ -101,15 +107,17 @@ function Bridge(): LambdaHandler {
         iot.subscribe(`${prefix}/events/${iot.clientId}`);
       });
 
-      iot.onmessage((_topic, payload) => {
+      iot.onmessage(async (_topic, payload) => {
         const fragment = JSON.parse(payload.toString()) as Fragment;
         console.info(`got fragment ${fragment.id} index ${fragment.index}`);
+
         let pending = fragments.get(fragment.id);
         if (!pending) {
           pending = new Array<Fragment>();
           fragments.set(fragment.id, pending);
         }
         pending.push(fragment);
+
         if (pending.length === fragment.count) {
           console.info(`got all fragments ${fragment.id}`);
           fragments.delete(fragment.id);
@@ -118,8 +126,27 @@ function Bridge(): LambdaHandler {
           parts.forEach(part => {
             data += part.data;
           });
-          const message = JSON.parse(data) as Message;
-          onresult(message);
+          try {
+            let message = JSON.parse(data) as Message;
+            if (message.type !== 'pointer') {
+              onresult(message);
+              return;
+            }
+
+            const {key, bucket} = message.properties;
+            const body = await s3.getObject(bucket!, key!);
+            s3.delObject(bucket!, key!).catch(err =>
+              console.error('Delete object error', err)
+            );
+            let buf = body;
+            if (message.properties.gzip) {
+              buf = await unzip(body);
+            }
+            message = JSON.parse(buf.toString('utf-8'));
+            onresult(message);
+          } catch (err) {
+            console.error('Parse error', err);
+          }
         }
       });
 
@@ -136,7 +163,7 @@ function Bridge(): LambdaHandler {
       publish = async (msg: Message) => {
         const data = JSON.stringify(msg);
         const parts = data.split(/(.{50000})/);
-        const id = uuidv4();
+        const id = crypto.randomUUID();
         const topic = `${prefix}/events`;
         for (let i = 0; i < parts.length; i += 1) {
           const fragment: Fragment = {
@@ -194,6 +221,18 @@ function Bridge(): LambdaHandler {
 
 function delay(ms: number) {
   return new Promise(r => setTimeout(r, ms));
+}
+
+function unzip(input: string | Buffer): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    zlib.unzip(input, (err, buf) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(buf);
+    });
+  });
 }
 
 export = (handler: LambdaHandler): LambdaHandler => {

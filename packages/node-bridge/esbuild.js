@@ -5,7 +5,7 @@ esbuild.build({
   bundle: true,
   sourcemap: true,
   format: 'cjs',
-  packages: 'external',
+  // packages: 'external',
   platform: 'node',
   outfile: 'dist/index.js',
 });

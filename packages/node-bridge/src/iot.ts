@@ -1,6 +1,6 @@
 import {DescribeEndpointCommand, IoTClient} from '@aws-sdk/client-iot';
 import iot from 'aws-iot-device-sdk';
-import {v4 as uuidv4} from 'uuid';
+import crypto from 'crypto';
 
 const useAWSIoT = () => {
   const client = new IoTClient();
@@ -18,7 +18,7 @@ const useAWSIoT = () => {
 export const useIoT = async () => {
   const client = useAWSIoT();
   const endpoint = await client.describeEndpoint();
-  const clientId = uuidv4();
+  const clientId = crypto.randomUUID();
   const device = new iot.device({
     protocol: 'wss',
     host: endpoint,

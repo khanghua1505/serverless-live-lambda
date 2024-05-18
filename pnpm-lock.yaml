@@ -41,12 +41,12 @@ importers:
       aws-iot-device-sdk:
         specifier: ^2.2.13
         version: 2.2.13
-      uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
     devDependencies:
       '@aws-sdk/client-iot':
         specifier: ^3.454.0
+        version: 3.577.0
+      '@aws-sdk/client-s3':
+        specifier: ^3.456.0
         version: 3.577.0
       '@types/aws-iot-device-sdk':
         specifier: ^2.2.8
