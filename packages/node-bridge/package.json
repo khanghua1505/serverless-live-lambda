@@ -1,8 +1,8 @@
 {
-  "name": "@serverless-live-lambda/node-bridge",
-  "version": "0.1.0",
+  "name": "serverless-live-lambda-node-bridge",
+  "version": "0.1.0-alpha",
   "main": "dist/index.js",
-  "homepage": "https://github.com/aboutkh/serverless-live-lambda#readme",
+  "homepage": "https://github.com/khanghua1505/serverless-live-lambda#readme",
   "files": [
     "dist"
   ],
