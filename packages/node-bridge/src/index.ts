@@ -178,7 +178,14 @@ function Bridge(): LambdaHandler {
     while (true) {
       if (results.length !== 0) {
         const result = results.shift();
-        return result;
+        switch (result?.type) {
+          case 'function.success':
+            return result.properties.body;
+          case 'function.error':
+            throw new Error(result.properties.errorMessage);
+          default:
+            throw new Error(`unknown message type ${result?.type}`);
+        }
       }
       await delay(100);
     }
