@@ -74,6 +74,7 @@ interface MessageProps {
   env: {
     [key: string]: string;
   };
+
   errorMessage?: string;
 }
 
@@ -93,104 +94,93 @@ function Bridge(): LambdaHandler {
   }
 
   const s3 = useS3();
+  const iot = useIoT();
 
-  let onresult: (msg: Message) => void;
-  let publish: (msg: Message) => Promise<void>;
-  let clientId: string;
-  let unlock = false;
+  const promise = iot.initDevice();
+  promise.then(device => {
+    device.on('connect', () => {
+      device.subscribe(`${prefix}/events/${iot.clientId}`, {qos: 1});
+    });
 
-  useIoT()
-    .then(iot => {
-      clientId = iot.clientId;
-
-      iot.onconnect(() => {
-        iot.subscribe(`${prefix}/events/${iot.clientId}`);
+    device.on('message', async (topic: string, payload: any) => {
+      const fragment = JSON.parse(payload.toString()) as Fragment;
+      console.info(`got fragment ${fragment.id} index ${fragment.index}`);
+      let pending = fragments.get(fragment.id);
+      if (!pending) {
+        pending = new Array<Fragment>();
+        fragments.set(fragment.id, pending);
+      }
+      pending.push(fragment);
+      if (pending.length < fragment.count) {
+        return;
+      }
+      console.info(`got all fragments ${fragment.id}`);
+      fragments.delete(fragment.id);
+      const parts = pending.sort((a, b) => a.index - b.index);
+      let data = '';
+      parts.forEach(part => {
+        data += part.data;
       });
-
-      iot.onmessage(async (_topic, payload) => {
-        const fragment = JSON.parse(payload.toString()) as Fragment;
-        console.info(`got fragment ${fragment.id} index ${fragment.index}`);
-
-        let pending = fragments.get(fragment.id);
-        if (!pending) {
-          pending = new Array<Fragment>();
-          fragments.set(fragment.id, pending);
-        }
-        pending.push(fragment);
-
-        if (pending.length === fragment.count) {
-          console.info(`got all fragments ${fragment.id}`);
-          fragments.delete(fragment.id);
-          const parts = pending.sort((a, b) => a.index - b.index);
-          let data = '';
-          parts.forEach(part => {
-            data += part.data;
-          });
-          try {
-            let message = JSON.parse(data) as Message;
-            if (message.type !== 'pointer') {
-              onresult(message);
-              return;
-            }
-
-            const {key, bucket} = message.properties;
-            const body = await s3.getObject(bucket!, key!);
-            s3.delObject(bucket!, key!).catch(err =>
-              console.error('Delete object error', err)
-            );
-            let buf = body;
-            if (message.properties.gzip) {
-              buf = await unzip(body);
-            }
-            message = JSON.parse(buf.toString('utf-8'));
-            onresult(message);
-          } catch (err) {
-            console.error('Parse error', err);
-          }
-        }
-      });
-
-      onresult = (msg: Message) => {
-        const {workerId} = msg.properties;
-        if (workerId !== iot.clientId) {
+      try {
+        let message = JSON.parse(data) as Message;
+        if (message.type !== 'pointer') {
+          onresult(message);
           return;
         }
-        if (msg.type === 'function.success' || msg.type === 'function.error') {
-          results.push(msg);
+        const {key, bucket} = message.properties;
+        const body = await s3.getObject(bucket!, key!);
+        s3.delObject(bucket!, key!).catch(err =>
+          console.error('Delete object error', err)
+        );
+        let buf = body;
+        if (message.properties.gzip) {
+          buf = await unzip(body);
         }
-      };
+        message = JSON.parse(buf.toString('utf-8'));
+        onresult(message);
+      } catch (err) {
+        console.error('Parse error', err);
+      }
+    });
+  });
 
-      publish = async (msg: Message) => {
-        const data = JSON.stringify(msg);
-        const parts = data.split(/(.{50000})/);
-        const id = crypto.randomUUID();
-        const topic = `${prefix}/events`;
-        for (let i = 0; i < parts.length; i += 1) {
-          const fragment: Fragment = {
-            id,
-            index: i,
-            count: parts.length,
-            data: parts[i],
-          };
-          await iot.publish(topic, JSON.stringify(fragment));
+  const publish = async (msg: Message) => {
+    const device = await promise;
+    const data = JSON.stringify(msg);
+    const parts = data.split(/(.{50000})/);
+    const id = crypto.randomUUID();
+    const topic = `${prefix}/events`;
+    parts.forEach((part, i) => {
+      const fragment: Fragment = {
+        id,
+        index: i,
+        count: parts.length,
+        data: part,
+      };
+      const buf = JSON.stringify(fragment);
+      device.publish(topic, buf, {qos: 1}, err => {
+        if (err) {
+          console.error('publish message error', err);
         }
-      };
+      });
+    });
+  };
 
-      // Unlock
-      unlock = true;
-    })
-    .catch(err => console.log(err));
+  const onresult = (msg: Message) => {
+    const {workerId} = msg.properties;
+    if (workerId !== iot.clientId) {
+      return;
+    }
+    if (msg.type === 'function.success' || msg.type === 'function.error') {
+      results.push(msg);
+    }
+  };
 
   return async (event: any, context: LambdaContext) => {
-    // Wait until for ready
-    while (!unlock) {
-      await delay(100);
-    }
-
     const msg: Message = {
       type: 'function.invoked',
       properties: {
-        workerId: clientId,
+        workerId: iot.clientId,
         requestId: context.awsRequestId,
         functionId: context.functionName,
         deadline: context.getRemainingTimeInMillis(),
@@ -214,13 +204,9 @@ function Bridge(): LambdaHandler {
             throw new Error(`unknown message type ${result?.type}`);
         }
       }
-      await delay(100);
+      await new Promise(r => setTimeout(r, 100));
     }
   };
-}
-
-function delay(ms: number) {
-  return new Promise(r => setTimeout(r, ms));
 }
 
 function unzip(input: string | Buffer): Promise<Buffer> {
