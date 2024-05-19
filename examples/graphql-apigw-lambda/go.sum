@@ -2,10 +2,6 @@ github.com/99designs/gqlgen v0.17.47 h1:M9DTK8X3+3ATNBfZlHBwMwNngn4hhZWDxNmTiuQU
 github.com/99designs/gqlgen v0.17.47/go.mod h1:ejVkldSdtmuudqmtfaiqjwlGXWAhIv0DKXGXFY25F04=
 github.com/PuerkitoBio/goquery v1.9.2 h1:4/wZksC3KgkQw7SQgkKotmKljk0M6V8TUvA8Wb4yPeE=
 github.com/PuerkitoBio/goquery v1.9.2/go.mod h1:GHPCaP0ODyyxqcNoFGYlAprUFH81NuRPd0GX3Zu2Mvk=
-github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda v0.0.0-20240318124231-0c94d9054bad h1:FQKCX7va3b8Zqd7MQe2qqC9ssDK86fj+Qf/L2A06CWs=
-github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda v0.0.0-20240318124231-0c94d9054bad/go.mod h1:D5BRuYOkMYuWtB4DnDZcr0E1M2C6UY8P8VMn2/HEwcE=
-github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20240318124231-0c94d9054bad h1:7JII//LNqM4YMkZdVE3qwHSrB4CIeCMa+qWOiJy9e54=
-github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20240318124231-0c94d9054bad/go.mod h1:IvfMqrqXWlu/NtnS6kb4pbgnPdDWQ+l8hlTUcIwrwi4=
 github.com/agnivade/levenshtein v1.1.1 h1:QY8M92nrzkmr798gCo3kmMyqXFzdQVpxLlGPRBij0P8=
 github.com/agnivade/levenshtein v1.1.1/go.mod h1:veldBMzWxcCG2ZvUTKD2kJNRdCk5hVbJomOvKkmgYbo=
 github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 h1:bvNMNQO63//z+xNgfBlViaCIJKLlCJ6/fmUseuG0wVQ=

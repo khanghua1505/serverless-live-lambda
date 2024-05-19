@@ -7,17 +7,18 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"examples/graphql-apigw-lambda/internal/graph"
-	"examples/graphql-apigw-lambda/internal/graph/model"
 	"fmt"
 	"time"
 
 	faker "github.com/go-faker/faker/v4"
 	"github.com/google/uuid"
+
+	"examples/graphql-apigw-lambda/internal/graph"
+	"examples/graphql-apigw-lambda/internal/graph/model"
 )
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	count := 10000
+	count := 10
 	models := make([]*model.Todo, count)
 	for i := 0; i < count; i++ {
 		models[i] = &model.Todo{

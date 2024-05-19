@@ -8,8 +8,6 @@ replace github.com/khanghua1505/serverless-live-lambda/packages/go-bridge => ../
 
 require (
 	github.com/99designs/gqlgen v0.17.47
-	github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda v0.0.0-20240318124231-0c94d9054bad
-	github.com/aboutkh/serverless-live-lambda/support/go v0.0.0-20240318124231-0c94d9054bad
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
 	github.com/gin-gonic/gin v1.10.0
