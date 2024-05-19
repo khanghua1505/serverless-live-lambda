@@ -7,8 +7,8 @@
 package main
 
 import (
-	"examples/graphql-apigw-lambda/internal/api"
-	"examples/graphql-apigw-lambda/internal/http"
+	"examples/todos/internal/api"
+	"examples/todos/internal/http"
 )
 
 // Injectors from wire.go:

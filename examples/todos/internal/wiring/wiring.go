@@ -3,9 +3,9 @@ package wiring
 import (
 	"github.com/google/wire"
 
-	"examples/graphql-apigw-lambda/internal/api"
-	"examples/graphql-apigw-lambda/internal/graph"
-	"examples/graphql-apigw-lambda/internal/http"
+	"examples/todos/internal/api"
+	"examples/todos/internal/graph"
+	"examples/todos/internal/http"
 )
 
 var ProviderSet = wire.NewSet(

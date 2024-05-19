@@ -13,8 +13,8 @@ import (
 	faker "github.com/go-faker/faker/v4"
 	"github.com/google/uuid"
 
-	"examples/graphql-apigw-lambda/internal/graph"
-	"examples/graphql-apigw-lambda/internal/graph/model"
+	"examples/todos/internal/graph"
+	"examples/todos/internal/graph/model"
 )
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {

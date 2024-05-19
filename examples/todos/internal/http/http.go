@@ -9,7 +9,7 @@ import (
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
 
-	"examples/graphql-apigw-lambda/internal/graph"
+	"examples/todos/internal/graph"
 )
 
 type Server struct {

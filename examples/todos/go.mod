@@ -1,4 +1,4 @@
-module examples/graphql-apigw-lambda
+module examples/todos
 
 go 1.21
 

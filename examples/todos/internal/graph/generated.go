@@ -7,7 +7,7 @@ import (
 	"context"
 	"embed"
 	"errors"
-	"examples/graphql-apigw-lambda/internal/graph/model"
+	"examples/todos/internal/graph/model"
 	"fmt"
 	"strconv"
 	"sync"

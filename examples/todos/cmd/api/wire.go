@@ -6,8 +6,8 @@ package main
 import (
 	"github.com/google/wire"
 
-	"examples/graphql-apigw-lambda/internal/http"
-	"examples/graphql-apigw-lambda/internal/wiring"
+	"examples/todos/internal/http"
+	"examples/todos/internal/wiring"
 )
 
 func newServer() *http.Server {
