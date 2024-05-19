@@ -1,4 +1,4 @@
-module github.com/aboutkh/serverless-live-lambda/support/go
+module github.com/khanghua1505/serverless-live-lambda/packages/go-bridge
 
 go 1.18.0
 
