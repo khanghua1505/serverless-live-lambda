@@ -1,20 +1,19 @@
 
-const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
 const bridge = require('serverless-live-lambda-node-bridge');
 
-exports.handler = bridge(async (event) => {
-  const result = {}
-  for (let i = 0; i < 20000; i++) {
-    const randStr = crypto.randomBytes(48).toString('base64')
-    result[i] = randStr
-  }
+const html = fs.readFileSync(
+  path.join(__dirname, './public/index.html'), 
+  { encoding:'utf8' },
+);
 
-  const body = JSON.stringify(result, null, 2);
-  const payloadSize = Math.ceil(body.length / 1024);
-  console.log(`Payload size ${payloadSize} KB`);
-
+exports.handler = bridge(async () => {
   return {
     statusCode: 200,
-    body,
+    headers: {
+        'Content-Type': 'text/html',
+    },
+    body: html,
   }
 });

@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "serverless-live-lambda-node-bridge": "0.1.4-alpha"
+    "serverless-live-lambda-node-bridge": "0.1.5-alpha"
   }
 }

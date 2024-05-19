@@ -19,19 +19,13 @@ importers:
 
   examples/hello-world:
     dependencies:
-      '@aws-sdk/client-iot':
-        specifier: ^3.454.0
-        version: 3.577.0
-      '@aws-sdk/client-s3':
-        specifier: ^3.456.0
-        version: 3.577.0
-      '@types/aws-iot-device-sdk':
-        specifier: ^2.2.8
-        version: 2.2.8
       serverless-live-lambda-node-bridge:
         specifier: 0.1.1-alpha
         version: 0.1.1-alpha
     devDependencies:
+      '@aws-sdk/client-iot':
+        specifier: ^3.577.0
+        version: 3.577.0
       '@types/aws-lambda':
         specifier: ^8.10.138
         version: 8.10.138
