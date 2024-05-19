@@ -11,7 +11,7 @@ instead, it directly forwards the payload to the local machine.
 
 **Features:**
 
-- Supports Go λ runtimes. There are plans to support Node.js and Python soon.
+- Supports Go, NodeJS λ runtimes. There are plans to support Python soon.
 - Debug lambda function in local machine.
 - Hot reloads your handler files.
 - Load variables from .env files.
@@ -156,15 +156,16 @@ Here are some important notes when you run debug:
 
 ## Bridge Library
 
-Currently, this plugin exclusively supports the Go runtime, with plans underway to extend support
+Currently, this plugin exclusively supports the Go and Node runtimes, with plans underway to extend support
 to additional runtimes. To forward the payload from Lambda, you need to install the bridge library
 to your codes.
 
 You can find the libraries here:
 
-| Language | Library                                              |
-|----------|------------------------------------------------------|
-| Go       | github.com/aboutkh/serverless-live-lambda/support/go |
+| Language | Library                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------ |
+| Go       | github.com/khanghua1505/serverless-live-lambda/packages/go-bridge                                      |
+| Node     | [serverless-live-lambda-node-bridge](https://www.npmjs.com/package/serverless-live-lambda-node-bridge) |
 
 
 For Go example:
@@ -173,7 +174,7 @@ For Go example:
 package main
 
 import (
-	bridge "github.com/aboutkh/serverless-live-lambda/support/go"
+	bridge "github.com/khanghua1505/serverless-live-lambda/packages/go-bridge"
 
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -187,6 +188,7 @@ func main() {
 
 ## Examples
 
-| Name                 | Language | Link                                                                                                         |
-|----------------------|----------|--------------------------------------------------------------------------------------------------------------|
-| graphql-apigw-lambda | Go       | [Example Link](https://github.com/aboutkh/serverless-live-lambda/tree/main/examples/go/graphql-apigw-lambda) |
+| Name                 | Language   | Link                                                                          |
+| -------------------- | ---------- | ----------------------------------------------------------------------------- |
+| hello-world          | Javascript | [Example Link](https://github.com/khanghua1505/examples/hello-world)          |
+| graphql-apigw-lambda | Go         | [Example Link](https://github.com/khanghua1505/examples/graphql-apigw-lambda) |
