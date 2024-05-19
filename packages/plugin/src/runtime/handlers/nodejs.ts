@@ -58,6 +58,7 @@ export const useNodeJsHandler = (): RuntimeHandler => {
           execArgv: ['--enable-source-maps'],
           workerData: {
             ...input,
+            handler: cache.handler,
             out: cache.out,
             file: cache.file,
           },
@@ -145,8 +146,9 @@ export const useNodeJsHandler = (): RuntimeHandler => {
       }
 
       let ctx = rebuildCache[input.functionId]?.ctx;
-      const outdir = path.join(input.out, rootPath);
+      const outfile = path.join(input.out, 'index.js');
       if (!ctx) {
+        const esbuildOptions = packageJson.esbuild || {};
         const options: esbuild.BuildOptions = {
           entryPoints: [file],
           platform: 'node',
@@ -173,8 +175,9 @@ export const useNodeJsHandler = (): RuntimeHandler => {
                 format: 'cjs',
                 target: 'node16',
               }),
-          outdir: outdir,
+          outfile,
           sourcemap: true,
+          ...esbuildOptions,
         };
 
         ctx = await esbuild.context(options);
@@ -184,9 +187,9 @@ export const useNodeJsHandler = (): RuntimeHandler => {
         const result = await ctx.rebuild();
         rebuildCache[input.functionId] = {
           project,
-          out: outdir,
           handler: exportFunction,
-          file,
+          out: input.out,
+          file: outfile,
           shouldReload: false,
           ctx,
           result,
