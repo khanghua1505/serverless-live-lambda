@@ -1,4 +1,5 @@
 import esbuild from 'esbuild';
+import {copy} from 'esbuild-plugin-copy';
 import fsSync from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
@@ -148,7 +149,10 @@ export const useNodeJsHandler = (): RuntimeHandler => {
       let ctx = rebuildCache[input.functionId]?.ctx;
       const outfile = path.join(input.out, 'index.js');
       if (!ctx) {
-        const esbuildOptions = packageJson.esbuild || {};
+        const externalOptions = packageJson.esbuild || {};
+        if (externalOptions?.plugins?.copy) {
+          externalOptions.plugins = [copy(externalOptions.plugins.copy)];
+        }
         const options: esbuild.BuildOptions = {
           entryPoints: [file],
           platform: 'node',
@@ -177,7 +181,7 @@ export const useNodeJsHandler = (): RuntimeHandler => {
               }),
           outfile,
           sourcemap: true,
-          ...esbuildOptions,
+          ...externalOptions,
         };
 
         ctx = await esbuild.context(options);
