@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/aws/aws-lambda-go/events"
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
 
-	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda/internal/graph"
+	"examples/graphql-apigw-lambda/internal/graph"
 )
 
 type Server struct {

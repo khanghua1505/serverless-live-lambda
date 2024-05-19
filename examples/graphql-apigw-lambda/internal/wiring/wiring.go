@@ -3,9 +3,9 @@ package wiring
 import (
 	"github.com/google/wire"
 
-	"github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda/internal/api"
-	"github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda/internal/graph"
-	"github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda/internal/http"
+	"examples/graphql-apigw-lambda/internal/api"
+	"examples/graphql-apigw-lambda/internal/graph"
+	"examples/graphql-apigw-lambda/internal/http"
 )
 
 var ProviderSet = wire.NewSet(

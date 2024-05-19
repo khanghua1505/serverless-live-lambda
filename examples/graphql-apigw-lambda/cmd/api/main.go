@@ -1,9 +1,8 @@
 package main
 
 import (
-	bridge "github.com/aboutkh/serverless-live-lambda/support/go"
-
 	"github.com/aws/aws-lambda-go/lambda"
+	bridge "github.com/khanghua1505/serverless-live-lambda/packages/go-bridge"
 )
 
 func main() {

@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+type Query struct {
+}
+
 type Todo struct {
 	ID        string    `json:"id"`
 	Body      string    `json:"body"`

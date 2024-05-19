@@ -10,29 +10,29 @@ provider:
       statements:
         - Effect: Allow
           Action:
-            - 's3:GetObject'
-            - 's3:DeleteObject'
+            - "s3:GetObject"
+            - "s3:DeleteObject"
           Resource:
-            - !Sub '${ServerlessDeploymentBucket.Arn}/*'
+            - !Sub "${ServerlessDeploymentBucket.Arn}/*"
         - Effect: Allow
           Action:
-            - 'iot:Connect'
-            - 'iot:DescribeEndpoint'
-          Resource: '*'
+            - "iot:Connect"
+            - "iot:DescribeEndpoint"
+          Resource: "*"
         - Effect: Allow
           Action:
-            - 'iot:Publish'
-            - 'iot:Subscribe'
-            - 'iot:Receive'
+            - "iot:Publish"
+            - "iot:Subscribe"
+            - "iot:Receive"
           Resource:
-            - 'arn:aws:iot:*:*:topic/serverless/*'
-            - 'arn:aws:iot:*:*:topicfilter/serverless/*'
+            - "arn:aws:iot:*:*:topic/serverless/*"
+            - "arn:aws:iot:*:*:topicfilter/serverless/*"
 
 custom:
   go:
     binDir: bin
     cmd: GOARCH=amd64 GOOS=linux go build -ldflags="-s -w"
-    supportedRuntimes: ['provided.al2']
+    supportedRuntimes: ["provided.al2"]
     buildProvidedRuntimeAsBootstrap: true
 
 plugins:
@@ -42,6 +42,7 @@ plugins:
 
 functions:
   api:
+    runtime: provided.al2
     handler: ./cmd/api/.
     timeout: 30
     events:
@@ -49,5 +50,6 @@ functions:
           method: ANY
           path: /{proxy+}
   hello:
+    runtime: provided.al2
     handler: ./cmd/hello/.
     timeout: 30

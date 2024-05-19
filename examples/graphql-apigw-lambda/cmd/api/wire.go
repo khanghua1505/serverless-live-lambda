@@ -6,8 +6,8 @@ package main
 import (
 	"github.com/google/wire"
 
-	"github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda/internal/http"
-	"github.com/aboutkh/serverless-live-lambda/examples/go/graphql-apigw-lambda/internal/wiring"
+	"examples/graphql-apigw-lambda/internal/http"
+	"examples/graphql-apigw-lambda/internal/wiring"
 )
 
 func newServer() *http.Server {

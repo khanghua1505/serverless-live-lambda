@@ -10,6 +10,6 @@
   "license": "ISC",
   "devDependencies": {
     "serverless-go-plugin": "^2.2.0",
-    "serverless-live-lambda": "^0.1"
+    "serverless-live-lambda": "0.2.1-alpha"
   }
 }
