@@ -188,7 +188,7 @@ func main() {
 
 ## Examples
 
-| Name                 | Language   | Link                                                                          |
-| -------------------- | ---------- | ----------------------------------------------------------------------------- |
-| hello-world          | Javascript | [Example Link](https://github.com/khanghua1505/examples/hello-world)          |
-| graphql-apigw-lambda | Go         | [Example Link](https://github.com/khanghua1505/examples/graphql-apigw-lambda) |
+| Name                 | Language   | Link                                                                 |
+| -------------------- | ---------- | -------------------------------------------------------------------- |
+| hello-world          | Javascript | [Example Link](https://github.com/khanghua1505/examples/hello-world) |
+| graphql-apigw-lambda | Go         | [Example Link](https://github.com/khanghua1505/examples/todos)       |

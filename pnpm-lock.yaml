@@ -8,15 +8,6 @@ importers:
 
   .: {}
 
-  examples/graphql-apigw-lambda:
-    devDependencies:
-      serverless-go-plugin:
-        specifier: ^2.2.0
-        version: 2.4.0
-      serverless-live-lambda:
-        specifier: 0.2.2
-        version: 0.2.2
-
   examples/hello-world:
     dependencies:
       serverless-live-lambda:
@@ -32,6 +23,15 @@ importers:
       '@types/aws-lambda':
         specifier: ^8.10.138
         version: 8.10.138
+
+  examples/todos:
+    devDependencies:
+      serverless-go-plugin:
+        specifier: ^2.2.0
+        version: 2.4.0
+      serverless-live-lambda:
+        specifier: 0.2.2
+        version: 0.2.2
 
   packages/node-bridge:
     dependencies:
