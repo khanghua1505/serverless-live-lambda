@@ -1,4 +1,5 @@
 import esbuild from 'esbuild';
+import {copy} from 'esbuild-plugin-copy';
 import fsSync from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
@@ -58,6 +59,7 @@ export const useNodeJsHandler = (): RuntimeHandler => {
           execArgv: ['--enable-source-maps'],
           workerData: {
             ...input,
+            handler: cache.handler,
             out: cache.out,
             file: cache.file,
           },
@@ -145,8 +147,12 @@ export const useNodeJsHandler = (): RuntimeHandler => {
       }
 
       let ctx = rebuildCache[input.functionId]?.ctx;
-      const outdir = path.join(input.out, rootPath);
+      const outfile = path.join(input.out, 'index.js');
       if (!ctx) {
+        const externalOptions = packageJson.esbuild || {};
+        if (externalOptions?.plugins?.copy) {
+          externalOptions.plugins = [copy(externalOptions.plugins.copy)];
+        }
         const options: esbuild.BuildOptions = {
           entryPoints: [file],
           platform: 'node',
@@ -173,8 +179,9 @@ export const useNodeJsHandler = (): RuntimeHandler => {
                 format: 'cjs',
                 target: 'node16',
               }),
-          outdir: outdir,
+          outfile,
           sourcemap: true,
+          ...externalOptions,
         };
 
         ctx = await esbuild.context(options);
@@ -184,9 +191,9 @@ export const useNodeJsHandler = (): RuntimeHandler => {
         const result = await ctx.rebuild();
         rebuildCache[input.functionId] = {
           project,
-          out: outdir,
           handler: exportFunction,
-          file,
+          out: input.out,
+          file: outfile,
           shouldReload: false,
           ctx,
           result,

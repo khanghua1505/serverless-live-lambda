@@ -15,7 +15,7 @@ importers:
         version: 2.4.0
       serverless-live-lambda:
         specifier: 0.2.1-alpha
-        version: link:../../packages/plugin
+        version: 0.2.1-alpha
 
   examples/hello-world:
     dependencies:
@@ -2900,6 +2900,10 @@ packages:
 
   serverless-live-lambda-node-bridge@0.1.1-alpha:
     resolution: {integrity: sha512-zSzVhs5ffNDiXSBMiWKdITG8uwb4CIt70h5p7bbCn5pO2aMM5TKklw2iV2UmqXArX75W4SUqU2mUhqd/2GlN5w==}
+    engines: {node: '>=16'}
+
+  serverless-live-lambda@0.2.1-alpha:
+    resolution: {integrity: sha512-M5wf10npPsC1MSVu5SsVOINh1/mozGpjR4BF77DF3S6WYC8Ede8Z23mFxxOxZkf8zji7vLn5WvQEhGCtptrNcw==}
     engines: {node: '>=16'}
 
   serverless@3.38.0:
@@ -7114,6 +7118,26 @@ snapshots:
       aws-iot-device-sdk: 2.2.13
       uuid: 9.0.1
     transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  serverless-live-lambda@0.2.1-alpha:
+    dependencies:
+      '@aws-sdk/client-iot': 3.577.0
+      '@aws-sdk/client-lambda': 3.577.0
+      '@aws-sdk/client-s3': 3.577.0
+      aws-iot-device-sdk: 2.2.13
+      chalk: 4.1.2
+      chokidar: 3.6.0
+      dotenv: 16.4.5
+      dotenv-expand: 10.0.0
+      esbuild: 0.19.12
+      express: 4.19.2
+      randomcolor: 0.6.2
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - aws-crt
       - bufferutil
       - supports-color
       - utf-8-validate

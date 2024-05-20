@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "gts lint",
     "clean": "gts clean",
-    "compile": "node esbuild.js",
+    "compile": "node esbuild.js && tsc --emitDeclarationOnly --outDir dist",
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
