@@ -1,6 +1,6 @@
 {
   "name": "serverless-live-lambda",
-  "version": "0.2.1-alpha",
+  "version": "0.2.3",
   "description": "Live Lambda Development that allows you to debug and test your Lambda functions locally",
   "homepage": "https://github.com/khanghua1505/serverless-live-lambda#readme",
   "main": "dist/index.js",
