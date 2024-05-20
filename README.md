@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/serverless-live-lambda.svg?style=flat)](https://www.npmjs.com/package/serverless-live-lambda)
 [![Go Report Card](https://goreportcard.com/badge/github.com/aboutkh/serverless-live-lambda/support/go)](https://goreportcard.com/report/github.com/aboutkh/serverless-live-lambda/support/go)
 
-![](https://raw.githubusercontent.com/aboutkh/serverless-live-lambda/main/docs/img/arch.png)
+![](https://raw.githubusercontent.com/aboutkh/serverless-live-lambda/main/docs/img/icon.jpg)
 
 This Serverless plugin forwards the payload from Lambda to the local machine, supporting faster
 development cycles. Unlike `serverless-offline`, this plugin does not emulate the Lambda environment;
