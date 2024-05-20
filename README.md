@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/khanghua1505/serverless-live-lambda/packages/go-bridge)](https://goreportcard.com/report/github.com/khanghua1505/serverless-live-lambda/packages/go-bridge)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/khanghua1505/serverless-live-lambda/main/docs/img/icon.jpeg" width="400" height="400">
+  <img src="https://raw.githubusercontent.com/khanghua1505/serverless-live-lambda/main/docs/img/icon.jpg" width="400" height="400">
 </p>
 
 This Serverless plugin forwards the payload from Lambda to the local machine, supporting faster
